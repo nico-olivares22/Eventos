@@ -1,0 +1,66 @@
+{% extends "cabecera_footer.html" %}
+{% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
+
+{% block estilo %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">
+{% endblock %}
+
+{% block contenido %}
+
+<div class="container">
+  <div class="registro">
+    <div class="row">
+      <div class="col-md-12">
+
+        <div class="titulo">
+          <h1>Registrarse</h1>
+        </div>
+        <form method="POST" action="{{ url_for("registro") }}" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+          <!-- va lo que saque -->
+
+          <div class="form-group">
+            <!--Llama a macro para mostrar campo, pasa clase a palicar por parámetro -->
+            {{ mostrar_campo(formulario.nombre, class='form-control' )}}
+          </div>
+
+          <div class="form-group">
+            {{ mostrar_campo(formulario.apellido , class='form-control')}}
+          </div>
+
+          <div class="form-group">
+            {{ mostrar_campo(formulario.email , class='form-control')}}
+          </div>
+
+          <div class="form-group">
+            {{ mostrar_campo(formulario.password , class='form-control')}}
+          </div>
+
+
+
+          <div class="form-group">
+            {{ mostrar_campo(formulario.confirmar , class='form-control')}}
+          </div>
+
+
+          <!--	<div class="form-group">
+							<div class="form-check">
+								<input class="form-check-input is-invalid" type="checkbox" value="" id="invalidCheck3" required>
+								<label class="form-check-label" for="invalidCheck3">
+									Aceptar los terminos y condiciones
+								</label>
+							</div>-->
+          <!--<div class="invalid-feedback">
+								Ustede debe aceptar los terminos.
+							</div>-->
+          <div class="form-group">
+            {{ mostrar_campo_submit(formulario.submit , class='btn btn-warning')}}
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

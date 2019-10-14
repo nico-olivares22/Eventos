@@ -1,0 +1,63 @@
+
+{% extends "cabecera_footer.html" %}
+{% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
+{% block estilo %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">
+{% endblock %}
+{% block contenido %}
+
+<div class="container">
+  <div class="registro">
+    <div class="row">
+      <div class="col-md-12">
+        {% if (destino=="actualizar") %}
+        <div class="titulo">
+          <h1>Actualizar</h1>
+          <form method="POST" action="{{url_for(destino,id=evento["eventoId"])}}" enctype="multipart/form-data">
+        </div>
+        {% endif %}
+        {% if (destino=="crearevento") %}
+        <div class="titulo">
+          <h1>Crear Evento</h1>
+        </div>
+
+        <form method="POST" action="{{url_for(destino)}}" enctype="multipart/form-data">
+          {% endif %}
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+          <div class="form-group">
+
+            {{ mostrar_campo(formulario_crear.titulo, class='form-control' )}}
+          </div>
+          <div class="form-group">
+            {{ mostrar_campo(formulario_crear.fechaEven, class='form-control' )}}
+          </div>
+          <div class="form-group">
+            {{ mostrar_campo(formulario_crear.hora, class='form-control' )}}
+          </div>
+          <div class="form-group">
+            {{ mostrar_campo(formulario_crear.opciones, class='form-control' )}}
+          </div>
+          <div class="form-group">
+            <!-- Si el formulario es llamado para insertar mostrar el campo, sino mostrar la imagen -->
+  	    		{% if(destino=="crearevento") %}
+  	      			{{ mostrar_campo(formulario_crear.imagen , class='form-control')}}
+  	      	{% endif %}
+  	      	{% if(destino=="actualizar") %}
+  	           <img style="width:130px;margin-left:20px;margin-bottom:-5px;" src="{{url_for('static', filename='imagenes/autodromo.jpg')}}" >
+  	      	{% endif %}
+  	      	</div>
+          <div class="form-group">
+            {{ mostrar_campo(formulario_crear.descripcion , class='form-control')}}
+          </div>
+          <div class="boton" id=botonderegistro>
+            {{ mostrar_campo_submit(formulario_crear.submit , class='btn btn-warning')}}
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+</form>
+
+</html>
+{% endblock %}

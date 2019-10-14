@@ -1,0 +1,66 @@
+{% from "macros.html" import evento_comentarioadmin, eventodetallado,evento_comentario %}
+{% extends "cabecera_footer.html" %}
+{% block estilo %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">
+{% endblock %}
+{% block iconos %}
+<link rel="stylesheet" href="{{url_for('static',filename='open-iconic/font/css/open-iconic-bootstrap.css') }}">
+{% endblock %}
+{% block contenido %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="titulo-evento">
+          <h1>{{evento["nombre"]}}</h1>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+        <div class="card">
+          <img src="{{url_for('static',filename='imagenes/autodromo.jpg')}}" class="card-img-top imagen-evento" alt="...">
+          <div class="card-body">
+          </div>
+          <!--agregar demas contenido de card imagen-->
+        </div>
+      </div>
+      <div class="col-md-4">
+        <a type="button" href="" class="btn btn-success boton-evento">Aprobar Evento </a>
+      </div>
+      <div class="row">
+        <div class="col-md-4">
+          <div class="comentario1">
+            <h3>Comentarios</h3>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8">
+      <!--  <div class="media">
+          <div class="media-body">
+            <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
+            officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
+            itaque.
+            <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
+            officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
+            itaque.
+            <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
+            officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
+            itaque.
+          </div>
+        </div>-->
+        {% for comentario in listacomentarios %}
+        {{ evento_comentarioadmin(comentario) }}
+        {% endfor %}
+      </div>
+      <!--<div class="col-md-4">
+        <a type="button" href=""class="btn btn-success boton-evento">Eliminar Comentarios </a>
+      </div>-->
+    </div>
+  </div>
+
+{% endblock %}

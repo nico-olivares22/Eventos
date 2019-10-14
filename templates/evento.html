@@ -1,0 +1,113 @@
+{% from "macros.html" import evento_comentario, eventodetallado %}
+{% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
+{% extends "cabecera_footer.html" %}
+{% block estilo %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">
+{% endblock %}
+{% block iconos %}
+<link rel="stylesheet" href="{{url_for('static',filename='open-iconic/font/css/open-iconic-bootstrap.css') }}">
+{% endblock %}
+{% block contenido %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="titulo-evento">
+        <h1>{{evento["nombre"]}}</h1>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <img src="{{url_for('static',filename='imagenes/autodromo.jpg')}}" class="card-img-top imagen-evento" alt="...">
+        <div class="card-body">
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <p><span class="oi oi-calendar" title "calendar">{{evento["fecha"]}}</span></p>
+      <p><span class="oi oi-clock" title "clock"></span>{{evento["hora"]}}</p>
+      <p><span class="oi oi-browser" title "map"></span>{{evento["tipo"]}}</p>
+
+    </div>
+    <div class="col-md-2">
+      <h4>Descripcion</h4>
+      <p class="card-text"><small class="text-muted">{{evento["descripcion"]}}</small></p>
+      <button type="button" class="btn btn-success boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
+
+      <!--Modal-->
+      <div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered modalcoment1" role="document">
+
+          <form method="POST" action="{{ url_for('evento', id=evento["eventoId"]) }}" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+            <div class="modal-content modalcoment2">
+              <div class="modal-header">
+                <h3 class="modal-title modaltitulo" id="exampleModalCenterTitle" style="text-align: center;">Comentar Evento</h3>
+                <button type="button" class="closebtn" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true" class="ekis">&times;</span>
+                </button>
+              </div>
+
+              <div class="modal-body">
+                <div class="comentario">
+                  {{ mostrar_campo(formulario_comentario.campocomentario, class='form-control', style="width: 490px; height: 170px" )}}
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger cancelar" data-dismiss="modal">Cancelar</button>
+                {{ mostrar_campo_submit(formulario_comentario.submit , class='btn btn-danger enviar')}}
+              </div>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+
+
+
+
+
+
+      <a type="button"  href="{{url_for('actualizar',id=evento["eventoId"])}}" class="btn btn-success boton-evento1">Actualizar Evento </a>
+
+
+    </div>
+    {% for evento in listaeventos %}
+    {{ eventodetallado(evento) }}
+    {% endfor %}
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="comentario1">
+        <h4>Comentarios</h4>
+      </div>
+      <!--<div class="media">
+          <div class="media-body">
+            <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
+            officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
+            itaque.
+            <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
+            officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
+            itaque.
+            <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
+            officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
+            itaque.
+          </div>
+        </div>-->
+      {% for comentario in listacomentarios %}
+      {{ evento_comentario(comentario) }}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

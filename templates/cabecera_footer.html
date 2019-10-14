@@ -1,0 +1,252 @@
+{% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
+<!--<!DOCTYPE html>-->
+<html lang="es">
+
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta charset="UTF-8">
+  <title>Cabecera</title>
+  {% block iconos %}
+  {% endblock %}
+  {% block estilo %}
+  <link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">
+  {% endblock %}
+
+</head>
+
+
+<body>
+
+  {% if logueado is sameas true %}
+
+  <nav class="navbar navbar-expand-lg navbar-light" id="cabeza">
+    <div class="row">
+      <div class="col-md-12">
+        <img class="imagen-cabecera" src="{{url_for('static',filename='imagenes/images.png')}}" alt="logo">
+      </div>
+    </div>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <!--<a class="nav-link" href="{{url_for('pagina')}}">Home<span class="sr-only">(current)</span></a>-->
+          <a href="{{url_for('pagina')}}" type="button" class="btn btn-light boton-iniciar">Home</a>
+        </li>
+
+        <!--<li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Menú
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="nav-link" href="{{url_for('pagina')}}">Ver Eventos</a>
+        </div>
+      </li>-->
+        {% if admin is sameas false %}
+        <li class="nav-item active">
+          <a href="{{url_for('crearevento')}}" type="button" class="btn btn-warning boton-iniciar">CrearEvento</a>
+        </li>
+        <li class="nav-item active">
+          <a href="{{url_for('miseventos')}}" type="button" class="btn btn-warning boton-iniciar">MisEventos</a>
+        </li>
+        {% endif %}
+        {% if admin is sameas true %}
+
+        <li class="nav-item">
+          <a href="{{url_for('aprobareventos')}}" type="button" class="btn btn-warning boton-iniciar">AprobarEventos</a>
+        </li>
+        {% endif %}
+      </ul>
+
+      <form class="form-inline my-2 my-lg-0">
+        <!--    <li>
+          <a class="nav-link">
+            {% if admin is sameas true %}
+            Administrador
+            {% else %}
+            @Usuario
+            {% endif %}
+          </a>
+        </li>-->
+        <a href="{{url_for('pagina')}}" class="btn btn-light my-2 my-sm-0" type="submit">Cerrar Sesión</a>
+      </form>
+    </div>
+  </nav>
+
+  {% else %}
+  <nav class="navbar navbar-expand-lg navbar-light" id="cabeza">
+    <div class="row">
+      <div class="col-md-12">
+        <img class="imagen-cabecera" src="{{url_for('static',filename='imagenes/images.png')}}" alt="logo">
+      </div>
+    </div>
+    <button class="navbar-toggler " type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <!--<a class="nav-link" href="{{url_for('pagina')}}">Home<span class="sr-only">(current)</span></a>-->
+          <a href="{{url_for('pagina')}}" type="button" class="btn btn-light boton-iniciar">Home</a>
+        </li>
+
+        <a href="{{url_for('registro')}}" type="button" class="btn btn-warning boton-iniciar">Registrarme</a>
+        <a type="button" href="{{url_for('pagina')}}"class="btn btn-warning boton-iniciar">Buscar Eventos</a>
+        <!--<div class="form-inline">
+          <label for="texto">Usuario</label>
+          <input type="text" name="campotexto" id="texto" class="form-control">
+        </div>
+        <div class="form-inline">
+          <label for="texto">Contraseña</label>
+          <input type="text" name="campotexto" id="texto" class="form-control">
+        </div>-->
+
+        <!--<a href="{{url_for('pagina')}}"type="button" class="btn btn-warning boton-iniciar">Iniciar Sesión</a>-->
+
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <!--<a href="{{url_for('pagina')}}" class="btn btn-danger my-2 my-sm-0" type="submit">Iniciar Sesión</a>-->
+
+        <button type="button" class="btn btn-light boton-evento" data-toggle="modal" data-target="#modal_inicio">Entrar</button>
+
+        <!--Modal-->
+        <div class="modal fade" id="modal_inicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+          <div class="modal-dialog modal-dialog-centered modalcoment1" role="document">
+
+            <form method="POST" action="{{ url_for('pagina') }}" enctype="multipart/form-data">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+              <div class="modal-content modalcoment2">
+                <div class="modal-header">
+                  <h3 class="modal-title modaltitulo" id="exampleModalCenterTitle" style="text-align: center;">Iniciar Sesión</h3>
+                  <button type="button" class="closebtn" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="ekis">&times;</span>
+                  </button>
+                </div>
+
+                <div class="modal-body">
+                  <div class="form-group row">
+                    <div class="col-md-6 user">
+                      {{ mostrar_campo(formulario_ingreso.email , class='form-control')}}
+                    </div>
+                    <div class="col-md-6 contra">
+                      {{ mostrar_campo(formulario_ingreso.contraseña , class='form-control')}}
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-danger cancel" data-dismiss="modal">Cancelar</button>
+                  {{ mostrar_campo_submit(formulario_ingreso.submit , class='btn btn-danger cancel')}}
+                </div>
+              </div>
+
+          </form>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </nav>
+
+  {% endif %}
+
+
+
+
+
+
+
+
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <!--Obtener mensajes mensajes-->
+        {% with messages = get_flashed_messages() %}
+        <!--Si existen mensajes-->
+        {% if messages %}
+        <!--Recorrer mensajes-->
+        {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <!--Mostrar mensaje-->
+          {{ message }}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+  {% block contenido %}
+  {% endblock %}
+
+
+
+
+
+
+  <footer class="section footer-classic context-dark bg-image" style="background: #2d3246" id=pie>
+    <div class="container">
+      <div class="row row-30">
+        <div class="col-md-4 col-xl-5">
+          <div class="pr-xl-4"><a class="brand" href="index.html"><img class="brand-logo-light" src="images/agency/logo-inverse-140x37.png" alt="" width="140" height="37" srcset="images/agency/logo-retina-inverse-280x74.png 2x"></a>
+            <p>Nuestro Fin es proporcionar un bien para la humanidad, sin perjudicar a nadie, ese es nuestro mayor objetivo. Las críticas enviarlas detalladas al mail de contacto.</p>
+            <!-- Rights-->
+            <p class="rights"><span>©  </span><span class="copyright-year">2019</span><span> </span><span>Waves</span><span>. </span><span>All Rights Reserved.</span></p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <h5>DATOS DE ADMIN</h5>
+          <dl class="contact-list">
+            <dt>DIRECCIÓN:</dt>
+            <dd>798 South Park Avenue, Jaipur, Raj</dd>
+          </dl>
+          <dl class="contact-list">
+            <dt>EMAIL:</dt>
+            <dd><a href="mailto:#">eventos@gmail.com</a></dd>
+          </dl>
+          <dl class="contact-list">
+            <dt>Teléfonos:</dt>
+            <dd><a href="tel:#">2345656464</a> <span>or</span> <a href="tel:#">2342324542</a>
+            </dd>
+          </dl>
+        </div>
+        <div class="col-md-4 col-xl-3">
+          <h5>Datos Legales</h5>
+          <ul class="nav-list">
+            <li><a href="#">Política de Cookies</a></li>
+            <li><a href="#">Donaciones</a></li>
+            <li><a href="#">Política de Privacidad</a></li>
+            <li><a href="#">Licencia</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="row no-gutters social-container">
+      <div class="col"><a class="social-inner" href="#"><span class="icon mdi mdi-facebook"></span><span>Facebook</span></a></div>
+      <div class="col"><a class="social-inner" href="#"><span class="icon mdi mdi-instagram"></span><span>instagram</span></a></div>
+      <div class="col"><a class="social-inner" href="#"><span class="icon mdi mdi-twitter"></span><span>twitter</span></a></div>
+      <div class="col"><a class="social-inner" href="#"><span class="icon mdi mdi-youtube-play"></span><span>google</span></a></div>
+    </div>
+  </footer>
+</body>
+
+</html>

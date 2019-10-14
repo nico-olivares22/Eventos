@@ -1,0 +1,31 @@
+{% from "macros.html" import evento_detalladousuario %}
+{% extends "cabecera_footer.html" %}
+{% block estilo %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">
+{% endblock %}
+{% block iconos %}
+<link rel="stylesheet" href="{{url_for('static',filename='open-iconic/font/css/open-iconic-bootstrap.css') }}">
+{% endblock %}
+{% block contenido %}
+<div class="titulo-miseventos">
+<h1>Mis Eventos</h1>
+</div>
+<div class="container" id="containerevento">
+    <div class="row ">
+        <div class="col-md-12">
+            <!--<div class="fondo">
+                <p>Evento 1</p>
+                <p>Visibilidad<span class="oi oi-eye" title "eye"></i></p>
+                <p>Estado<i class="oi oi-check" title="check"></i></p>
+                <a type="button"  class="btn btn-warning">Modificar Evento</a>
+                <a type="button" class="btn btn-danger">Eliminar Evento</a>
+            </div>-->
+            {% for evento in listaeventos %}
+            {{ evento_detalladousuario(evento) }}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</body>
+</html>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% from "macros.html" import evento_admin,evento_admin_pendiente %}
+{% extends "cabecera_footer.html" %}
+{% block estilo %}
+<link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">
+{% endblock %}
+{% block iconos %}
+<link rel="stylesheet" href="{{url_for('static',filename='open-iconic/font/css/open-iconic-bootstrap.css') }}">
+{% endblock %}
+{% block contenido %}
+<div class="titulo-miseventos">
+<h1>Eventos Aprobados</h1>
+</div>
+<!--<div class="container" id="containerevento">
+    <div class="row ">
+        <div class="col-md-12">
+            <div class="fondo">
+                <p>Evento 1</p>
+                <p>Visibilidad<span class="oi oi-eye" title "eye"></i></p>
+                <p>Estado<i class="oi oi-check" title="check"></i></p>
+                <a type="button" class="btn btn-danger">Ver Evento</a>
+                <a type="button"  class="btn btn-warning">Modificar Evento</a>
+                <a type="button" class="btn btn-danger">Eliminar Evento</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" id="containerevento">
+    <div class="row ">
+        <div class="col-md-12">
+            <div class="fondo">
+                <p>Evento 2</p>
+                <p>Visibilidad<span class="oi oi-eye" title "eye"></i></p>
+                <p>Estado<i class="oi oi-check" title="check"></i></p>
+                <a type="button" class="btn btn-danger">Ver Evento</a>
+                <a type="button"   class="btn btn-warning">Modificar Evento</a<>
+                <a type="button" class="btn btn-danger">Eliminar Evento</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" id="containerevento">
+    <div class="row ">
+        <div class="col-md-12">
+            <div class="fondo">
+                <p>Evento 3</p>
+                <p>Visibilidad<span class="oi oi-eye" title "eye"></i></p>
+                <p>Estado<i class="oi oi-check" title="check"></i></p>
+                <a type="button" class="btn btn-danger">Ver Evento</a>
+                <a type="button"   class="btn btn-warning">Modificar Evento</a>
+                <a type="button" class="btn btn-danger">Eliminar Evento</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>-->
+{% for evento in eventos_aprobados %}
+{{ evento_admin(evento) }}
+{% endfor %}
+<div class="titulo-miseventos">
+<h1>Eventos Pendientes </h1>
+</div>
+{% for evento in eventos_pendientes %}
+{{ evento_admin_pendiente (evento) }}
+{% endfor %}
+{% endblock %}
