@@ -21,8 +21,6 @@
 
 <body>
 
-  {% if logueado is sameas true %}
-
   <nav class="navbar navbar-expand-lg navbar-light" id="cabeza">
     <div class="row">
       <div class="col-md-12">
@@ -48,20 +46,26 @@
           <a class="nav-link" href="{{url_for('pagina')}}">Ver Eventos</a>
         </div>
       </li>-->
-        {% if admin is sameas false %}
-        <li class="nav-item active">
+
+
+        {#{% if  current_user.is_authenticated and current_user.is_admin==False %}#}
+        <!--<li class="nav-item active">
           <a href="{{url_for('crearevento')}}" type="button" class="btn btn-warning boton-iniciar">CrearEvento</a>
         </li>
         <li class="nav-item active">
           <a href="{{url_for('miseventos')}}" type="button" class="btn btn-warning boton-iniciar">MisEventos</a>
-        </li>
-        {% endif %}
-        {% if admin is sameas true %}
+        </li>-->
+        {#{% endif %}#}
 
-        <li class="nav-item">
-          <a href="{{url_for('aprobareventos')}}" type="button" class="btn btn-warning boton-iniciar">AprobarEventos</a>
+        {#{% if  current_user.is_authenticated and current_user.is_admin==False %}#}
+        <!--<li class="nav-item active">
+          <a href="{{url_for('crearevento')}}" type="button" class="btn btn-warning boton-iniciar">CrearEvento</a>
         </li>
-        {% endif %}
+        <li class="nav-item active">
+          <a href="{{url_for('miseventos')}}" type="button" class="btn btn-warning boton-iniciar">MisEventos</a>
+        </li>-->
+        {#{% endif %}#}
+
       </ul>
 
       <form class="form-inline my-2 my-lg-0">
@@ -74,13 +78,36 @@
             {% endif %}
           </a>
         </li>-->
-        <a href="{{url_for('pagina')}}" class="btn btn-light my-2 my-sm-0" type="submit">Cerrar Sesión</a>
+        {% if current_user.is_authenticated and current_user.admin %}
+
+        <li class="nav-item">
+          <a href="{{url_for('aprobareventos')}}" type="button" class="btn btn-warning boton-miseventos">AprobarEventos</a>
+        </li>
+        <a href="{{url_for('logout')}}" class="btn btn-light my-2 my-sm-0 boton-logout" type="submit">Cerrar Sesión</a>
+        <p style="color: red"><span class="oi oi-person" title "calendar"></span> Hola {{ current_user.nombre }}!!</p>
+        {% endif %}
+        {% if current_user.is_authenticated and not current_user.admin %}
+        <li class="nav-item active">
+          <a href="{{url_for('crearevento')}}" type="button" class="btn btn-warning boton-iniciar">CrearEvento</a>
+        </li>
+        <li class="nav-item active">
+          <a href="{{url_for('miseventos')}}" type="button" class="btn btn-warning boton-miseventos">MisEventos</a>
+        </li>
+        <a href="{{url_for('logout')}}" class="btn btn-light my-2 my-sm-0 boton-logout" type="submit">Cerrar Sesión</a>
+
+        <p style="color: white"><span class="oi oi-person" title "calendar"></span> Hola {{ current_user.nombre }}!!</p>
+        {% endif %}
+
+        {% if not current_user.is_authenticated %}
+        <a href="{{url_for('registro')}}" type="button" class="btn btn-warning boton-logout">Registrarme</a>
+        <button type="button" class="btn btn-light boton-evento" data-toggle="modal" data-target="#modal_inicio">Entrar</button>
+        {% endif %}
       </form>
     </div>
   </nav>
 
-  {% else %}
-  <nav class="navbar navbar-expand-lg navbar-light" id="cabeza">
+  {#{% else %}#}
+  <!--<nav class="navbar navbar-expand-lg navbar-light" id="cabeza">
     <div class="row">
       <div class="col-md-12">
         <img class="imagen-cabecera" src="{{url_for('static',filename='imagenes/images.png')}}" alt="logo">
@@ -94,7 +121,7 @@
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
           <!--<a class="nav-link" href="{{url_for('pagina')}}">Home<span class="sr-only">(current)</span></a>-->
-          <a href="{{url_for('pagina')}}" type="button" class="btn btn-light boton-iniciar">Home</a>
+        <!--  <a href="{{url_for('pagina')}}" type="button" class="btn btn-light boton-iniciar">Home</a>
         </li>
 
         <a href="{{url_for('registro')}}" type="button" class="btn btn-warning boton-iniciar">Registrarme</a>
@@ -110,11 +137,12 @@
 
         <!--<a href="{{url_for('pagina')}}"type="button" class="btn btn-warning boton-iniciar">Iniciar Sesión</a>-->
 
-      </ul>
+      <!--</ul>
       <form class="form-inline my-2 my-lg-0">
         <!--<a href="{{url_for('pagina')}}" class="btn btn-danger my-2 my-sm-0" type="submit">Iniciar Sesión</a>-->
 
-        <button type="button" class="btn btn-light boton-evento" data-toggle="modal" data-target="#modal_inicio">Entrar</button>
+
+        <!--<button type="button" class="btn btn-light boton-evento" data-toggle="modal" data-target="#modal_inicio">Entrar</button>
 
         <!--Modal-->
         <div class="modal fade" id="modal_inicio" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -138,13 +166,13 @@
                       {{ mostrar_campo(formulario_ingreso.email , class='form-control')}}
                     </div>
                     <div class="col-md-6 contra">
-                      {{ mostrar_campo(formulario_ingreso.contraseña , class='form-control')}}
+                      {{ mostrar_campo(formulario_ingreso.password , class='form-control')}}
                     </div>
                   </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-danger cancel" data-dismiss="modal">Cancelar</button>
-                  {{ mostrar_campo_submit(formulario_ingreso.submit , class='btn btn-danger cancel')}}
+                  {{ mostrar_campo_submit(formulario_ingreso.submit_ingreso , class='btn btn-danger cancel')}}
                 </div>
               </div>
 
@@ -156,7 +184,7 @@
     </div>
   </nav>
 
-  {% endif %}
+  {#{% endif %}#}
 
 
 
@@ -207,7 +235,7 @@
     <div class="container">
       <div class="row row-30">
         <div class="col-md-4 col-xl-5">
-          <div class="pr-xl-4"><a class="brand" href="index.html"><img class="brand-logo-light" src="images/agency/logo-inverse-140x37.png" alt="" width="140" height="37" srcset="images/agency/logo-retina-inverse-280x74.png 2x"></a>
+          <div class="pr-xl-4">
             <p>Nuestro Fin es proporcionar un bien para la humanidad, sin perjudicar a nadie, ese es nuestro mayor objetivo. Las críticas enviarlas detalladas al mail de contacto.</p>
             <!-- Rights-->
             <p class="rights"><span>©  </span><span class="copyright-year">2019</span><span> </span><span>Waves</span><span>. </span><span>All Rights Reserved.</span></p>

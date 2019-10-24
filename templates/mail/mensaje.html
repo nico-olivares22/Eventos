@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+      <meta charset="UTF-8">
+      <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <link rel="stylesheet" href="{{url_for('static', filename='css/estilogeneral.css', _external=True)}}"> <!--cliente web puede acceder a los estilos del correo"""-->
+
+      <title>Mail</title>
+  </head>
+  <body style="background-color: black">
+
+  <div class="container">
+      <div class="row">
+
+          <div class="col-md-12" style="text-align: center">
+
+
+
+
+              <h1 style="background-color: black; color: red">Cuenta creada con Éxito</h1>
+
+          </div>
+
+      </div>
+
+      <div class="row">
+
+          <div class="col-md-6" style="color: white; text-align: left; font-size: larger; font-weight: bolder;">
+              <h4 style="background-color: black; color: yellow">{{ formulario.nombre.data }}, te damos la bienvenida a Master Eventos!</h4>
+
+          </div>
+            <div class="col-md-6" style="color: white; text-align: left; font-size: larger; font-weight: bolder;">
+                  <h4 style="background-color: black; color: yellow">{{ formulario.nombre.data }}, comparte esta increible pagina con tus amigos! Nos ayuda a crecer!</h4>
+            </div>
+
+          </div>
+
+
+
+
+      </div>
+
+  </body>
+
+</html>

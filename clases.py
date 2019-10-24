@@ -5,6 +5,8 @@ from wtforms.fields.html5 import EmailField,DateField #Importa campos HTML
 from wtforms import validators #Importa validaciones
 from wtforms_components import TimeField
 from flask_wtf.file import FileField, FileRequired, FileAllowed #Importa funciones, validaciones y campos de archivo
+
+
 #Clase de Registro
 class Registro(FlaskForm):
 
@@ -60,7 +62,7 @@ class Registro(FlaskForm):
     #opciones = SelectField('Opción', choices=lista_opciones)
 
     #Definición de campo submit
-    submit = SubmitField("Registrarse")
+    submit1 = SubmitField("Registrarse")
 
 class CrearEvento(FlaskForm):
 
@@ -129,10 +131,10 @@ class Inicio(FlaskForm):
     ])
 
 
-    contraseña = PasswordField('Contraseña', [
+    password = PasswordField('Contraseña', [
         validators.Required(),
     ])
-    submit = SubmitField("Iniciar Sesión")
+    submit_ingreso = SubmitField("Iniciar Sesión")
 class Filtro(FlaskForm):
 
 

@@ -2,6 +2,7 @@ from app import db
 from modelos import *
 from flask import Flask
 from flask import flash #importar para mostrar mensajes flash
+from flask_login import login_required, login_user, logout_user, current_user,LoginManager
 
 app=Flask(__name__)
 
@@ -26,6 +27,7 @@ def listarEventos():
 
 #Función que permite crear un evento y guardarlo en la base de datos
 @app.route('/evento/crear/<eventoId>/<nombre>/<fechahora>/<tipo>/<imagen>/<descripcion>/<UsuarioId>')
+@login_required
 def crearEvento(titulo,fechaEven,hora,tipo,imagen,descripcion,usuarioId):
     usuario=db.session.query(Usuario).get(usuarioId)
     evento = Evento(usuario=usuario,nombre=titulo,fecha=fechaEven,hora=hora,tipo=tipo,imagen=imagen,descripcion=descripcion)
@@ -37,6 +39,7 @@ def crearEvento(titulo,fechaEven,hora,tipo,imagen,descripcion,usuarioId):
 
 #Función que permite actualizar el evento
 @app.route('/evento/actualizar/<evento>')
+@login_required
 def actualizarEvento(evento):
     db.session.add(evento)
     db.session.commit()
@@ -59,6 +62,7 @@ def listarComentarios(id):
 
 #Función que permite crear comentario
 @app.route('/comentario/crear/<eventoId>/<texto>/<fechahora>')
+@login_required
 def crearComentario(campocomentario,eventoId,usuarioId):
     usuario=db.session.query(Usuario).get(usuarioId)
     evento=db.session.query(Evento).get(eventoId)
@@ -93,7 +97,7 @@ def listarUsuarios():
 @app.route('/usuario/crear/<nombre>/<apellido>/<email>/<password>')
 def crearUsuario(nombre,apellido,email,password,admin=False):
     #Crear una persona
-    usuario = Usuario(nombre=nombre, apellido=apellido,email=email,password=password,admin=admin)
+    usuario = Usuario(nombre=nombre, apellido=apellido,email=email,passworden=password,admin=admin)
     #Agregar a db
     db.session.add(usuario)
     #Hacer commit de los cambios

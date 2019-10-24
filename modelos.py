@@ -1,4 +1,7 @@
-from app import db
+from app import db, login_manager
+from werkzeug.security import generate_password_hash, check_password_hash #Permite generar y verificar pass con hash
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer #para confirmar la cuenta
+from flask_login import UserMixin, LoginManager #cuestiones de login en la app
 class Evento(db.Model):
     eventoId = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(90), nullable=False)
@@ -17,20 +20,43 @@ class Evento(db.Model):
     def __repr__(self):
         return '<Evento: %r %r %r %r %r %r %r>' % (self.eventoId,self.nombre, self.fecha,self.hora, self.descripcion, self.imagen, self.tipo)
 
-class Usuario(db.Model):
+class Usuario(UserMixin,db.Model):
     usuarioId = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(20), nullable=False)
     apellido = db.Column(db.String(20), nullable=False)
-    email = db.Column(db.String(50), nullable=False)
-    password = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(80), nullable=False)
+    password = db.Column(db.String(130), nullable=False)
     admin = db.Column(db.Boolean, nullable=False)
     #agregar fechaNac
     #Relación entre evento y usuario
     eventos=db.relationship("Evento", back_populates="usuario", cascade="all, delete-orphan")
     #Relación entre usuario y comentario
     comentarios=db.relationship("Comentario", back_populates="usuario", cascade="all, delete-orphan")
+    #No permitir leer la pass de un usuario
+    @property
+    def passworden(self):
+        raise AttributeError('La password no puede leerse')
+    #Al setear la pass generar un hash
+    @passworden.setter
+    def passworden(self, passworden):
+        self.password = generate_password_hash(passworden) #encriptar contraseña
+    def get_id(self):
+           return (self.usuarioId)
+    #Al verififcar pass comparar hash del valor ingresado con el de la db
+    def verificar_pass(self, passworden):
+        print(self.password)
+        print(passworden)
+        return check_password_hash(self.password, passworden)
+    def is_admin(self):
+        auxiliar=False
+        if self.admin==1:
+            auxiliar=True
+        return auxiliar
     def __repr__(self):
         return '<Usuario: %r %r %r %r %r %r >' % (self.usuarioId,self.nombre,self.apellido, self.email, self.password,self.admin)
+@login_manager.user_loader
+def load_user(user_id):
+    return Usuario.query.get(int(user_id))
 
 class Comentario(db.Model):
     comentarioId = db.Column(db.Integer, primary_key=True)
