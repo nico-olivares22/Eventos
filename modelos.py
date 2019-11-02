@@ -1,3 +1,4 @@
+from flask import url_for
 from app import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash #Permite generar y verificar pass con hash
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer #para confirmar la cuenta
@@ -19,6 +20,23 @@ class Evento(db.Model):
 
     def __repr__(self):
         return '<Evento: %r %r %r %r %r %r %r>' % (self.eventoId,self.nombre, self.fecha,self.hora, self.descripcion, self.imagen, self.tipo)
+
+    #Convertir objeto en JSON
+    def a_json(self):
+        evento_json = {
+            'eventoId': url_for('apiGetEventoById', id=self.eventoId, _external=True), #ruta para acceder a persona
+            'nombre': self.nombre,
+            'fecha': self.fecha,
+            'tipo': self.tipo,
+        }
+        return evento_json
+    @staticmethod
+    #Convertir JSON a objeto
+    def desde_json(evento_json):
+        nombre = evento_json.get('nombre')
+        fecha = evento_json.get('fecha')
+        tipo = evento_json.get('tipo')
+        return Evento(nombre=nombre, fecha=fecha, tipo=tipo)
 
 class Usuario(UserMixin,db.Model):
     usuarioId = db.Column(db.Integer, primary_key=True)
@@ -70,3 +88,12 @@ class Comentario(db.Model):
     evento= db.relationship("Evento", back_populates="comentarios")
     def __repr__(self):
         return '<Comentario: %r %r %r >' % (self.comentarioId,self.contenido, self.fechahora)
+
+    #Convertir objeto en JSON
+    def a_json(self):
+        comentario_json = {
+            'comentarioId': url_for('apiGetComentarioById', id=self.comentarioId, _external=True), #ruta para acceder a persona
+            'contenido': self.contenido,
+            'fechahora': self.fechahora,
+        }
+        return comentario_json

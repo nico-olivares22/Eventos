@@ -2,7 +2,6 @@ from funciones import *
 from modelos import *
 from flask import Flask
 from flask import render_template #importar templates
-from flask_wtf import CSRFProtect #importar para proteccion CSRF
 from flask import flash #importar para mostrar mensajes flash
 from flask import redirect, url_for #importar para permitir redireccionar y generar url
 from clases import Registro #importar clase de formulario
@@ -23,7 +22,7 @@ def unauthorized_callback():
     return redirect(url_for('pagina'))
 
 
-csrf = CSRFProtect(app) #Iniciar protección CSRF
+
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') #clave secreta
 
 
@@ -174,7 +173,8 @@ def pagina():
         if filtro.opciones.data != '1':
             listaeventos= listaeventos.filter(Evento.tipo == filtro.opciones.data)
 
-        eventos = listaeventos.filter(Evento.aprobado == 1).order_by(Evento.fecha)
+        eventos = listaeventos.filter(Evento.aprobado == True).order_by(Evento.fecha)
+        print(eventos)
     return render_template('pagina_principal.html',formulario_ingreso=formulario_ingreso,listaeventos=listaeventos,
                             filtro=filtro,eventos=eventos)
 
@@ -268,6 +268,6 @@ def eliminarComentario(id):
     db.session.commit()
     flash('EL comentario ha sido borrado con Éxito')
     return redirect(url_for('user_admin',id=eventoID))
-
-
-app.run(debug=True)
+@app.route('/error')
+def error_1():
+    return render_template('500.html')

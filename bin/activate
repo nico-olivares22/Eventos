@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="/home/pablex/proyecto"
+VIRTUAL_ENV="/home/nicolas/Escritorio/proyecto programación/proyecto"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

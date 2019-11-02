@@ -1,0 +1,90 @@
+from flask import redirect, url_for, request
+from datetime import datetime
+from app import app,db,csrf
+from modelos import *
+from flask import jsonify #se convierten a json
+from funciones_mail import enviarMail
+
+
+#Listar Eventos
+#curl -H "Accept:application/json" http://localhost:5000/api/evento
+@app.route('/api/evento', methods=['GET'])
+def apiListarEventos():
+    eventos = db.session.query(Evento).filter(Evento.aprobado==0).all()
+    #Recorrer la lista de personas convirtiendo cada una a JSON
+    return jsonify({ 'eventos': [evento.a_json() for evento in eventos] })
+
+
+#Traer evento por id
+#curl -H "Accept:application/json" http://localhost:5000/admin/api/evento/15
+@app.route('/admin/api/evento/<id>', methods=['GET'])
+def apiGetEventoById(id):
+    evento =  db.session.query(Evento).get_or_404(id)
+    #Convertir la persona creada en JSON
+    return jsonify(evento.a_json())
+
+
+
+#Actualizar Evento
+#curl -i -X PUT -H "Content-Type:application/json" -H "Accept:application/json" http://localhost:5000/admin/api/evento/12 -d '{"nombre":"Maria"}'
+@app.route('/admin/api/evento/<id>', methods=['PUT'])
+@csrf.exempt
+def apiActualizarEvento(id):
+    evento =  db.session.query(Evento).get_or_404(id)
+    evento.nombre = request.json.get('nombre', evento.nombre)
+    evento.fecha = request.json.get('fecha', evento.fecha)
+    evento.tipo = request.json.get('tipo', evento.tipo)
+    db.session.add(evento)
+    db.session.commit()
+    #Convertir la persona actualizada en JSON
+    #Pasar código de status
+    return jsonify(evento.a_json()) , 201 #codigo que se envia de regreso
+
+#Eliminar Evento
+#curl -i -X DELETE -H "Accept: application/json" http://localhost:5000/admin/api/evento/12
+@app.route('/admin/api/evento/<id>', methods=['DELETE'])
+@csrf.exempt
+def apiEliminarEvento(id):
+    evento = db.session.query(Evento).get_or_404(id)
+    db.session.delete(evento)
+    db.session.commit()
+    #Pasar código de status
+    return '', 204
+
+
+#Aprobar Evento
+#curl -X POST -i -H  "Content-Type:application/json" -H "Accept:application/json" http://127.0.0.1:5000/admin/evento/aprobar/id
+@app.route('/admin/evento/aprobar/<id>',methods=['POST'])
+@csrf.exempt
+def aprobarEventosApi(id):
+    evento=db.session.query(Evento).get(id)
+    evento.aprobado=True
+    email=evento.usuario.email
+    enviarMail(email, 'Evento Aprobado por el Admin', 'evento_aprobado')
+    db.session.commit()
+    print("El evento ha sido aprobado")
+    return jsonify({'Evento':[evento.a_json()]})
+
+#________________________________________---Para comentarios--------_______________________-
+
+#curl -i -H "Content-Type:application/json" -H "Accept: application/json" http://localhost:5000/admin/api/comentarios/17
+@app.route('/admin/api/comentarios/<id>', methods=['GET'])
+def apiListarComentarios(id):
+    comentario = db.session.query(Comentario).get(id)
+    return jsonify(comentario.a_json())
+
+#curl -i -H "Content-Type:application/json" -H "Accept: application/json" http://localhost:5000/api/evento/comentarios/24
+@app.route('/api/evento/comentarios/<id>',methods=['GET'])
+def apiGetComentarioById(id):
+    comentarios= db.session.query(Comentario).filter(Comentario.eventoId==Evento.eventoId,Comentario.eventoId==id,Evento.eventoId==id)
+    return jsonify({ 'Comentarios': [comentario.a_json() for comentario in comentarios] })
+
+#curl -i -X DELETE -H "Accept: application/json" http://localhost:5000/api/deletecomentario/60
+@app.route('/api/deletecomentario/<id>',methods=['DELETE'])
+@csrf.exempt
+def deleteCommentapi(id):
+    comentario =db.session.query(Comentario).get(id)
+    db.session.delete(comentario)
+    db.session.commit()
+    print("Comentario borrado Exitosamente")
+    return '',204

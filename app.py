@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy #Incluye sqlAlchemy
 from sqlalchemy import or_
+from flask_wtf import CSRFProtect #importar para proteccion CSRF
 from dotenv import load_dotenv #carga variables de entorno
 import os
 from flask_mail import Mail, Message  # Importar para enviar Mail
@@ -16,6 +17,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True #Sigue las modificaciones en
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'+os.getenv('DB_USERNAME')+':'+os.getenv('DB_PASS')+'@localhost/consultas'
 #Instancia que representa la base de datos
 db = SQLAlchemy(app)
+csrf = CSRFProtect(app) #Iniciar protección CSRF
 
 
 #Configuración mail
@@ -38,4 +40,6 @@ app.secret_key = os.getenv('SECRET_KEY')
 
 if __name__ == '__main__': #Asegura que solo se ejectue el servidor cuando se ejecute el script directamente
     from rutas import *
-    app.run(port = 7000, debug = True)
+    from rutas_api import *
+    from errores import *
+    app.run(debug=True)
