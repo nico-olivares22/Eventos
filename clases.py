@@ -140,19 +140,18 @@ class Filtro(FlaskForm):
 
     fecha_desde = DateField('Desde que fecha quiere buscar',
     [
-        validators.DataRequired(message="Ingrese una fecha válida")
+        validators.Optional()
     ])
     fecha_hasta = DateField('Hasta que fecha quiere buscar',
     [
-        validators.DataRequired(message="Ingrese una fecha válida")
+        validators.Optional()
     ])
     tipo_evento = [
-        ('1','--Ingrese tipo de evento--'),
+        ('null','Ingrese Opción'),
         ('Fiesta','Fiesta'),
         ('Conferencia','Conferencia'),
         ('Festival','Festival'),
-        ('Obra','Obra'),
-        ('Otro','Otro')
+        ('Obra','Obra')
     ]
 
     opciones = SelectField('Opción', choices=tipo_evento)

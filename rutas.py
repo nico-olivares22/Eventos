@@ -1,6 +1,7 @@
 from funciones import *
 from modelos import *
 from flask import Flask
+from flask import request #en filtro se usa
 from flask import render_template #importar templates
 from flask import flash #importar para mostrar mensajes flash
 from flask import redirect, url_for #importar para permitir redireccionar y generar url
@@ -62,8 +63,9 @@ def logout():
     #Insntanciar formulario de Login
     formulario_ingreso = Inicio()
     filtro=Filtro()
-    listaeventos=eventos_listar()
-    return render_template('pagina_principal.html', formulario_ingreso=formulario_ingreso,filtro=filtro,listaeventos=listaeventos)
+    return redirect(url_for('pagina'))
+    #listaeventos=eventos_listar()
+    return render_template('pagina_principal.html', formulario_ingreso=formulario_ingreso,filtro=filtro)#eventos=listaeventos)
 
 
 #Funcion registro, permite que el usuario se registre
@@ -144,10 +146,13 @@ def actualizar(id):
 
 #Función de Pagina, muestra los eventos traido de la base
 @app.route('/', methods=["POST", "GET"])
-def pagina():
-    listaeventos=eventos_listar() #llama a la funcion que trae los eventos de la base y los guarda en listaeventos
+@app.route('/<int:pag>', methods=["POST", "GET"])
+#Ruta a la que se ingresa cuando se pagina con filtros ya aplicados
+@app.route('/index/<int:pag>/<fecha_desde>/<fecha_hasta>/<opciones>',methods=['GET'])
+def pagina(pag=1, fecha_desde='', fecha_hasta='', opciones=''):
+    #listaeventos=eventos_listar() #llama a la funcion que trae los eventos de la base y los guarda en listaeventos
     formulario_ingreso= Inicio() #Instanciar form inicio
-    filtro=Filtro() #instanciar form filtro
+
     if formulario_ingreso.validate_on_submit(): #si el form ha sido enviado y validado correctamente
         usuario=Usuario.query.filter_by(email=formulario_ingreso.email.data).first()
         print(usuario)
@@ -163,19 +168,30 @@ def pagina():
             #Mostrar error de autentiación
             flash('Email o Contraseña incorrectas', 'succes')
             return redirect(url_for('pagina'))
-    eventos = db.session.query(Evento).filter(Evento.fecha>= db.session.query(Evento).filter(Evento.aprobado == 1)).order_by(Evento.fecha) #consulta
-    if filtro.is_submitted():
-        listaeventos= db.session.query(Evento)
-        if filtro.fecha_desde.data is not None:
-            listaeventos = listaeventos.filter(Evento.fecha >= filtro.fecha_desde.data)
-        if filtro.fecha_hasta.data is not None:
-            listaeventos = listaeventos.filter(Evento.fecha <= filtro.fecha_hasta.data)
-        if filtro.opciones.data != '1':
-            listaeventos= listaeventos.filter(Evento.tipo == filtro.opciones.data)
+    filtro=Filtro() #instanciar form filtro
+    pag_tam = 6
+     #Si se realiza la búsqueda por formulario de filtro
+    if(request.args):
+        fecha_desde= request.args.get('fecha_desde',None)
+        fecha_hasta = request.args.get('fecha_hasta',None)
+        opciones = request.args.get('opciones',None)
+    eventos = Evento.query.filter(Evento.aprobado==True)
+    #Si se filtra por fecha desde cargar el valor en el formulario convirtiendo el valor de string a fecha
+    if(fecha_desde!=None and fecha_desde!=''):
+        filtro.fecha_desde.data = datetime.datetime.strptime(fecha_desde, "%Y-%m-%d").date()
+        eventos=eventos.filter(Evento.fecha>=fecha_desde)
+    #Si se filtra por fecha hasta cargar el valor en el formulario convirtiendo el valor de string a fecha
+    if(fecha_hasta!=None and fecha_hasta!=''):
+        filtro.fecha_hasta.data = datetime.datetime.strptime(fecha_hasta, "%Y-%m-%d").date()
+        eventos=eventos.filter(Evento.fecha<=fecha_hasta)
+    #Si se filtra por categoria desde cargar el valor en el formulario
+    if(opciones!=None and opciones!=''  and opciones!='null' and opciones!='None'):
+        filtro.opciones.data = opciones
+        eventos=eventos.filter(Evento.tipo==opciones)
+    eventos=eventos.order_by(Evento.fecha.desc())
+    eventos=eventos.paginate(pag,pag_tam,error_out=False)
 
-        eventos = listaeventos.filter(Evento.aprobado == True).order_by(Evento.fecha)
-        print(eventos)
-    return render_template('pagina_principal.html',formulario_ingreso=formulario_ingreso,listaeventos=listaeventos,
+    return render_template('pagina_principal.html',formulario_ingreso=formulario_ingreso,
                             filtro=filtro,eventos=eventos)
 
 

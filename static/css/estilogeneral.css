@@ -280,3 +280,28 @@ ul, ol {
 .boton-logout{
   margin-right: 5px;
 }
+.paginacion_original{
+    margin: 20px 0;
+    font-size: 22px;
+    text-align: center;
+    color:#000000;
+    text-decoration: none;
+
+}
+.paginacion_original{
+    text-align: center;
+    display:inline-block;
+    margin-right: 10px;
+    padding: 10px 20px;
+    color:#000000;
+    text-decoration: none;
+}
+.paginacion_original a {
+  font-size: 22px;
+}
+.paginacion_original a {
+  border: 1px solid #ddd; /* Gray */
+  border: white 5px solid;
+  background-color: #F8F8FF;
+  color:black;
+}
