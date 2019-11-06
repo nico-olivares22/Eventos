@@ -1,10 +1,10 @@
-from app import db
+from app import db,app
 from modelos import *
-from flask import Flask
+from flask import Flask, redirect
 from flask import flash #importar para mostrar mensajes flash
 from flask_login import login_required, login_user, logout_user, current_user,LoginManager
-
-app=Flask(__name__)
+from sqlalchemy.exc import SQLAlchemyError
+from errores import escribir_log
 
 #Función que permite lsitar los eventos de la BD
 def eventos_listar():
@@ -26,7 +26,7 @@ def listarEventos():
     return render_template('eventos.html',eventos=eventos,filtro="")
 
 #Función que permite crear un evento y guardarlo en la base de datos
-@app.route('/evento/crear/<eventoId>/<nombre>/<fechahora>/<tipo>/<imagen>/<descripcion>/<UsuarioId>')
+@app.route('/evento/crear<eventoId>/<nombre>/<fechahora>/<tipo>/<imagen>/<descripcion>/<UsuarioId>')
 @login_required
 def crearEvento(titulo,fechaEven,hora,tipo,imagen,descripcion,usuarioId):
     usuario=db.session.query(Usuario).get(usuarioId)
@@ -34,7 +34,11 @@ def crearEvento(titulo,fechaEven,hora,tipo,imagen,descripcion,usuarioId):
     #Agregar a db
     db.session.add(evento)
     #Hacer commit de los cambios
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        escribir_log(str(e.message()), "Función crearEvento en funciones.py")
     #return render_template('evento.html',evento=evento)
 
 #Función que permite actualizar el evento
@@ -125,3 +129,13 @@ def eliminarUsuario(id):
     #Hacer commit de los cambios
     db.session.commit()
     return redirect(url_for('listarUsuarios'))
+@app.route('/errorbase')
+def probar_Error():
+    usuario=Usuario()
+    db.session.add(usuario)
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        escribir_log(e._message, "error en base de datos ")
+    return redirect(url_for('pagina'))

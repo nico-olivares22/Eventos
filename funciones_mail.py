@@ -3,7 +3,8 @@ from flask_mail import Mail, Message
 from flask import render_template
 from threading import Thread
 from modelos import *
-
+from errores import escribir_log
+import smtplib,os
 
 def enviarMail(to, subject, template, **kwargs):
     mensaje = Message(subject, sender=app.config['FLASKY_MAIL_SENDER'], recipients=[to])
@@ -19,7 +20,24 @@ def mail_enviado(app, mensaje):
         print(mensaje.subject)
         print(mensaje.sender)
         print(str(mensaje.recipients))
-        mail.send(mensaje)
+        try:
+            mail.send(mensaje)
+        #Generar código de error dependiendo de la excepción
+        except smtplib.SMTPSenderRefused as e:
+            sms = str(e)
+            escribir_log(sms,"Error en funciones_mail")
+        except smtplib.SMTPAuthenticationError as e:
+            sms = str(e)
+            escribir_log(sms,"Error en funciones_mail")
+        except smtplib.SMTPServerDisconnected as e:
+            sms = str(e)
+            escribir_log(sms,"Error en funciones_mail")
+        except smtplib.SMTPException as e:
+            error = str(e)
+            escribir_log(error,"Error en funciones_mail")
+        except OSError as e:
+            error = str(e)
+            escribir_log(error,"Error en funciones_mail")
 
 
 #funcion para validar email existente

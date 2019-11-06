@@ -1,0 +1,38 @@
+
+2019-11-05 18:16:17.513002, Error 500 Problema Interno, Funcion: Unknown
+2019-11-05 18:17:19.230375, Error 500 Problema Interno, Funcion: Unknown
+2019-11-05 18:23:01.893380, Error 500 Problema Interno, Funcion: Unknown
+2019-11-05 19:16:20.650533, Error 500 Problema Interno, Funcion: Unknown
+2019-11-05 19:20:03.613915, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 19:26:11.459990, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 19:33:39.170106, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 19:56:18.220375, [Errno 101] Network is unreachable, Funcion: Error en funciones_mail
+
+2019-11-05 20:18:43.782087, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 20:21:33.764110, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 20:24:42.037527, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 20:31:50.591280, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 20:32:57.657765, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 20:33:04.232551, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 20:34:42.188842, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 20:34:43.472354, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 20:36:43.263705, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 20:37:35.751816, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 20:38:37.706416, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-05 20:41:25.538610, <bound method SQLAlchemyError._message of IntegrityError('(pymysql.err.IntegrityError) (1048, "Column \'nombre\' cannot be null")',)>, Funcion: error en base de datos 
+
+2019-11-06 17:43:10.747072, (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials x194sm8691482qkb.66 - gsmtp'), Funcion: Error en funciones_mail
