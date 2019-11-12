@@ -4,6 +4,8 @@ from app import app,db,csrf
 from modelos import *
 from flask import jsonify #se convierten a json
 from funciones_mail import enviarMail
+from sqlalchemy.exc import SQLAlchemyError
+from errores import escribir_log
 
 
 #Listar Eventos
@@ -35,7 +37,11 @@ def apiActualizarEvento(id):
     evento.fecha = request.json.get('fecha', evento.fecha)
     evento.tipo = request.json.get('tipo', evento.tipo)
     db.session.add(evento)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        escribir_log(str(e._message()), "Error en base de datos en apiActualizarEvento en rutas_api.py")
     #Convertir la persona actualizada en JSON
     #Pasar código de status
     return jsonify(evento.a_json()) , 201 #codigo que se envia de regreso
@@ -47,7 +53,11 @@ def apiActualizarEvento(id):
 def apiEliminarEvento(id):
     evento = db.session.query(Evento).get_or_404(id)
     db.session.delete(evento)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        escribir_log(str(e._message()), "Error en base de datos en apiEliminarEvento en rutas_api.py")
     #Pasar código de status
     return '', 204
 
@@ -61,7 +71,11 @@ def aprobarEventosApi(id):
     evento.aprobado=True
     email=evento.usuario.email
     enviarMail(email, 'Evento Aprobado por el Admin', 'evento_aprobado')
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        escribir_log(str(e._message()), "Error en base de datos en aprobarEventosApi en rutas_api.py")
     print("El evento ha sido aprobado")
     return jsonify({'Evento':[evento.a_json()]})
 
@@ -79,12 +93,16 @@ def apiGetComentarioById(id):
     comentarios= db.session.query(Comentario).filter(Comentario.eventoId==Evento.eventoId,Comentario.eventoId==id,Evento.eventoId==id)
     return jsonify({ 'Comentarios': [comentario.a_json() for comentario in comentarios] })
 
-#curl -i -X DELETE -H "Accept: application/json" http://localhost:5000/api/deletecomentario/60
+#curl -i -X DELETE -H "Accept: application/json" http://localhost:5000/api/eliminarComentarioApi/60
 @app.route('/api/deletecomentario/<id>',methods=['DELETE'])
 @csrf.exempt
-def deleteCommentapi(id):
+def eliminarComentarioApi(id):
     comentario =db.session.query(Comentario).get(id)
     db.session.delete(comentario)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        escribir_log(str(e._message()), "Error en base de datos en eliminarComentarioApi en rutas_api.py")
     print("Comentario borrado Exitosamente")
     return '',204

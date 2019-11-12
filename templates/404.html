@@ -1,4 +1,6 @@
+{% extends "cabecera_footer.html" %}
 
+{% block contenido %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -16,6 +18,9 @@
 	<!-- Custom stlylesheet -->
 	{% block estilo %}
 	 <link rel="stylesheet" href="{{url_for('static',filename='css/style.css') }}">
+	{% endblock %}
+	{% block estilo2 %}
+	 <link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">
 	{% endblock %}
 	<!--<link type="text/css" rel="stylesheet" href="css/style.css" />-->
 
@@ -44,3 +49,4 @@
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 
 </html>
+{% endblock %}

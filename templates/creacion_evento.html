@@ -44,7 +44,7 @@
   	      			{{ mostrar_campo(formulario_crear.imagen , class='form-control')}}
   	      	{% endif %}
   	      	{% if(destino=="actualizar") %}
-  	           <img style="width:130px;margin-left:20px;margin-bottom:-5px;" src="{{url_for('static', filename='imagenes/autodromo.jpg')}}" >
+  	           <img style="width:130px;margin-left:20px;margin-bottom:-5px;" src="{{url_for('static', filename='imagenes/'+evento["imagen"])}}" >
   	      	{% endif %}
   	      	</div>
           <div class="form-group">

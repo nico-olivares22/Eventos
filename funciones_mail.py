@@ -17,9 +17,6 @@ def enviarMail(to, subject, template, **kwargs):
 def mail_enviado(app, mensaje):
 
     with app.app_context():
-        print(mensaje.subject)
-        print(mensaje.sender)
-        print(str(mensaje.recipients))
         try:
             mail.send(mensaje)
         #Generar código de error dependiendo de la excepción

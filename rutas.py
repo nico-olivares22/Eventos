@@ -14,6 +14,8 @@ from random import randint #importa funcion random que sera utilizada para guard
 from app import app,db,login_manager #importa base de datos
 from funciones_mail import *
 from flask_login import login_required, login_user, logout_user, current_user,LoginManager
+from sqlalchemy.exc import SQLAlchemyError
+from errores import escribir_log
 
 #Función que sobreescribe el método al intentar ingresar a una ruta no autorizada
 @login_manager.unauthorized_handler
@@ -155,8 +157,6 @@ def pagina(pag=1, fecha_desde='', fecha_hasta='', opciones=''):
 
     if formulario_ingreso.validate_on_submit(): #si el form ha sido enviado y validado correctamente
         usuario=Usuario.query.filter_by(email=formulario_ingreso.email.data).first()
-        print(usuario)
-        print(formulario_ingreso.password.data)
         if usuario is not None and usuario.verificar_pass(formulario_ingreso.password.data):
         #Loguear Usuario
                 login_user(usuario,False)
@@ -248,9 +248,12 @@ def aprobar_evento(id):
     evento.aprobado=True
     email=evento.usuario.email
     enviarMail(email, 'Evento Aprobado por el Admin', 'evento_aprobado')
-    print(evento.usuario.email)
     actualizarEvento(evento)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        escribir_log(str(e._message()), "Error en base de datos en aprobar_evento en rutas.py")
     flash('Evento Aprobado')
     return redirect(url_for('aprobareventos',evento=evento))
 
@@ -259,7 +262,11 @@ def aprobar_evento(id):
 def eliminar_evento_admin(id):
     evento=db.session.query(Evento).get(id)
     db.session.delete(evento)
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        escribir_log(str(e._message()), "Error en base de datos en eliminar_evento_admin en rutas.py")
     return redirect(url_for('aprobareventos',evento=evento))
 
 #Función que permite eliminar Evento por id
@@ -269,7 +276,11 @@ def eliminarEvento(id):
     #Eliminar de la db
     db.session.delete(evento)
     #Hacer commit de los cambios
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        escribir_log(str(e._message()), "Error en base de datos en eliminarEvento en rutas.py")
     return redirect(url_for('miseventos'))
 
 #Función que permite al admin eliminar comentario
@@ -281,7 +292,11 @@ def eliminarComentario(id):
     #Eliminar de la db
     db.session.delete(comentario)
     #Hacer commit de los cambios
-    db.session.commit()
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        escribir_log(str(e._message()), "Error en base de datos en eliminarComentario en rutas.py")
     flash('EL comentario ha sido borrado con Éxito')
     return redirect(url_for('user_admin',id=eventoID))
 @app.route('/error')

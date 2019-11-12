@@ -36,3 +36,13 @@
 2019-11-05 20:41:25.538610, <bound method SQLAlchemyError._message of IntegrityError('(pymysql.err.IntegrityError) (1048, "Column \'nombre\' cannot be null")',)>, Funcion: error en base de datos 
 
 2019-11-06 17:43:10.747072, (535, b'5.7.8 Username and Password not accepted. Learn more at\n5.7.8  https://support.google.com/mail/?p=BadCredentials x194sm8691482qkb.66 - gsmtp'), Funcion: Error en funciones_mail
+
+2019-11-12 10:40:45.920203, (pymysql.err.IntegrityError) (1048, "Column 'usuarioId' cannot be null"), Funcion: Error en base de datos en crearEvento en funciones.py
+
+2019-11-12 10:44:27.843286, (pymysql.err.IntegrityError) (1048, "Column 'nombre' cannot be null"), Funcion: Error en base de datos en crearEvento en funciones.py
+
+2019-11-12 10:45:54.541582, <bound method SQLAlchemyError._message of IntegrityError('(pymysql.err.IntegrityError) (1048, "Column \'nombre\' cannot be null")',)>, Funcion: error en base de datos 
+
+2019-11-12 10:58:52.509006, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError n5sm9315309qke.74 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
+
+2019-11-12 11:11:46.159331, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError o28sm11187360qtk.4 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail

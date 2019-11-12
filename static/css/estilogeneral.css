@@ -9,12 +9,12 @@ body {
 .cabecera {
   padding: 10px;
 }
-
 .card-deck {
   padding-top: 50px;
   padding-left: 20px;
   width: 100%;
   height: auto;
+
 }
 .card-body{
   background-image: url('../imagenes/index.jpeg');
