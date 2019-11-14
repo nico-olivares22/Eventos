@@ -9,23 +9,35 @@
 {% block contenido %}
   <div class="container">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-8">
         <div class="titulo-evento">
           <h1>{{evento["nombre"]}}</h1>
         </div>
       </div>
+      <div class="col-md-4">
+        </div>
     </div>
     <div class="row">
       <div class="col-md-8">
         <div class="card">
           <img src="{{url_for('static',filename='imagenes/autodromo.jpg')}}" class="card-img-top imagen-evento" alt="...">
           <div class="card-body">
+            <p><span class="oi oi-calendar" title "calendar">{{evento["fecha"]}}</span></p>
+            <p><span class="oi oi-clock" title "clock"></span>{{evento["hora"]}}</p>
+            <p><span class="oi oi-browser" title "map"></span>{{evento["tipo"]}}</p>
+            <p><small class="">{{evento["descripcion"]}}</small></p>
+            {% if evento.aprobado== 0 %}
+            <a type="button" href="{{url_for('aprobar_evento',id=evento["eventoId"])}}" class="btn btn-warning boton-evento">Aprobar Evento </a><a type="button" style="margin-left:5px"class="btn btn-warning" href="{{url_for('eliminar_evento_admin',id=evento["eventoId"])}}">Eliminar Evento </a>
+            {% endif %}
+            {% if evento.aprobado== 1 %}
+            <a type="button" class="btn btn-warning" href="{{url_for('eliminar_evento_admin',id=evento["eventoId"])}}">Eliminar Evento </a>
+            {% endif %}
           </div>
-          <!--agregar demas contenido de card imagen-->
+
         </div>
       </div>
       <div class="col-md-4">
-        <a type="button" href="" class="btn btn-success boton-evento">Aprobar Evento </a>
+
       </div>
       <div class="row">
         <div class="col-md-4">

@@ -8,7 +8,6 @@
     <p class="card-text"><span class="oi oi-calendar" title "calendar"></span>{{evento["fecha"].strftime('%d-%m-%Y')}}</p>
     <p class="card-text"><span class="oi oi-clock" title "clock"></span>{{evento["hora"]}}</p>
     <p class="card-text"><span class="oi oi-browser" title "map"></span>{{evento["tipo"]}}</p>
-    <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
     <a  type="button" href="{{url_for('evento',id=evento["eventoId"])}}" class="btn btn-danger">Ver Evento</a>
   </div>
 </div>
@@ -88,7 +87,7 @@
     <p>Visibilidad<span class="oi oi-eye" title "eye"></i></p>
     <p>Estado<i class="oi oi-check" title="check"></i></p>
     <a type="button"  class="btn btn-warning" href="{{url_for('actualizar',id=evento["eventoId"])}}">Modificar Evento</a>
-    <a type="button" class="btn btn-danger" href="{{url_for('eliminarEvento', id=evento["eventoId"])}}">Eliminar Evento</a>
+    <a type="button" class="btn btn-light" href="{{url_for('eliminarEvento', id=evento["eventoId"])}}">Eliminar Evento</a>
 </div>
 
 

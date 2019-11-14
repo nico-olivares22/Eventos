@@ -17,24 +17,32 @@
     </div>
   </div>
   <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-10">
       <div class="card">
         <img src="{{url_for('static',filename='imagenes/'+evento["imagen"])}}" class="card-img-top imagen-evento" alt="...">
         <div class="card-body">
+          <p><span class="oi oi-calendar" title "calendar">{{evento["fecha"]}}</span></p>
+          <p><span class="oi oi-clock" title "clock"></span>{{evento["hora"]}}</p>
+          <p><span class="oi oi-browser" title "map"></span>{{evento["tipo"]}}</p>
+          <p><small class="">{{evento["descripcion"]}}</small></p>
+
+          
+          {% if current_user.is_authenticated and not current_user.admin %}
+          <button type="button" class="btn btn-warning boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
+          {% endif %}
+          {% if current_user.is_authenticated and current_user.admin %}
+          <button type="button" class="btn btn-warning boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
+          {% endif %}
         </div>
       </div>
     </div>
-    <div class="col-md-2">
-      <p><span class="oi oi-calendar" title "calendar">{{evento["fecha"]}}</span></p>
+    <!--<div class="col-md-2">
+      <!--<p><span class="oi oi-calendar" title "calendar">{{evento["fecha"]}}</span></p>
       <p><span class="oi oi-clock" title "clock"></span>{{evento["hora"]}}</p>
-      <p><span class="oi oi-browser" title "map"></span>{{evento["tipo"]}}</p>
+      <p><span class="oi oi-browser" title "map"></span>{{evento["tipo"]}}</p>-->
 
-    </div>
+    <!--</div>-->
     <div class="col-md-2">
-      <h4>Descripcion</h4>
-      <p class="card-text"><small class="text-muted">{{evento["descripcion"]}}</small></p>
-      <button type="button" class="btn btn-success boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
-
       <!--Modal-->
       <div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
 
@@ -72,7 +80,7 @@
 
 
 
-      <a type="button"  href="{{url_for('actualizar',id=evento["eventoId"])}}" class="btn btn-success boton-evento1">Actualizar Evento </a>
+    <!--  <a type="button"  href="{{url_for('actualizar',id=evento["eventoId"])}}" class="btn btn-success boton-evento1">Actualizar Evento </a>-->
 
 
     </div>

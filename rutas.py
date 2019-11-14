@@ -205,7 +205,7 @@ def miseventos():
 
 #Función que permite ver el evento detallo por parte del user
 @app.route('/userevento/<id>', methods=["POST","GET"])
-@login_required
+#@login_required
 def evento(id):
     formulario_ingreso = Inicio() #instanciar form inicio
     evento = db.session.query(Evento).filter(Evento.eventoId == id).one() #consulta

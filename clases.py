@@ -88,13 +88,13 @@ class CrearEvento(FlaskForm):
     ])
 
     tipo = [
-        ('1','--Ingrese tipo de evento--'),
+        (None,'--Ingrese tipo de evento--'),
         ('Fiesta','Fiesta'),
         ('Conferencia','Conferencia'),
         ('Festival','Festival'),
         ('Obra','Obra')
     ]
-    opciones = SelectField('Opción', choices=tipo)
+    opciones = SelectField('Tipo', choices=tipo)
     #Definición de campo de archivo
     imagen = FileField(validators=[
         FileRequired(),
@@ -154,7 +154,7 @@ class Filtro(FlaskForm):
         ('Obra','Obra')
     ]
 
-    opciones = SelectField('Opción', choices=tipo_evento)
+    opciones = SelectField('Tipo', choices=tipo_evento)
 
     #Definición de campo submit
     submit = SubmitField("Filtrar")
