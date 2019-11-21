@@ -1,3 +1,4 @@
+
 {% macro mostrar_evento(evento) %}
 <div class="col-md-4">
 <div class="card-deck">
@@ -8,7 +9,7 @@
     <p class="card-text"><span class="oi oi-calendar" title "calendar"></span>{{evento["fecha"].strftime('%d-%m-%Y')}}</p>
     <p class="card-text"><span class="oi oi-clock" title "clock"></span>{{evento["hora"]}}</p>
     <p class="card-text"><span class="oi oi-browser" title "map"></span>{{evento["tipo"]}}</p>
-    <a  type="button" href="{{url_for('evento',id=evento["eventoId"])}}" class="btn btn-danger">Ver Evento</a>
+    <a  type="button" href="{{url_for('ver_evento',id=evento["eventoId"])}}" class="btn btn-danger">Ver Evento</a>
   </div>
 </div>
 </div>
@@ -34,8 +35,8 @@
                 <p>Visibilidad<span class="oi oi-eye" title "eye"></i></p>
                 <p>Estado<i class="oi oi-check" title="wrench"></i></p>
                 <a type="button" class="btn btn-warning" href="{{url_for('eliminar_evento_admin',id=evento["eventoId"])}}">Eliminar Evento </a>
-                <a type="button" class="btn btn-light" href="{{url_for('user_admin',id=evento["eventoId"])}}">Ver Evento </a>
-                <a type="button" class="btn btn-dark" href="{{url_for('actualizar',id=evento["eventoId"])}}">Editar Evento </a>
+                <a type="button" class="btn btn-light" href="{{url_for('ver_evento_admin',id=evento["eventoId"])}}">Ver Evento </a>
+                <a type="button" class="btn btn-dark" href="{{url_for('actualizar_evento',id=evento["eventoId"])}}">Editar Evento </a>
             </div>
         </div>
     </div>
@@ -62,7 +63,7 @@
                 <p>Visibilidad<span class="oi oi-eye" title "eye"></i></p>
                 <p>Estado<i class="oi oi-wrench" title="wrench"></i></p>
                 <a type="button" class="btn btn-dark" href="{{url_for('aprobar_evento',id=evento["eventoId"])}}">Aprobar Evento </a>
-                <a type="button" class="btn btn-light" href="{{url_for('user_admin',id=evento["eventoId"])}}">Ver Evento </a>
+                <a type="button" class="btn btn-light" href="{{url_for('ver_evento_admin',id=evento["eventoId"])}}">Ver Evento </a>
             </div>
         </div>
     </div>
@@ -76,18 +77,23 @@
     <h3 class="mt-0 font-weight-bold blue-text oi oi-person">{{comentario.usuario.nombre}}</h3>
     <h3 class="mt-0 font-weight-bold blue-text">{{comentario["fechahora"]}}</h3>
     <textarea class="form-control">{{comentario["contenido"]}}</textarea>
-    <!--<a type="button" class="btn btn-danger boton-comentario">Responder</a>-->
     </div>
 </div>
 {% endmacro %}
 
 {% macro evento_detalladousuario (evento) %}
+<div class="container" id="containerevento">
+  <div class="row ">
+        <div class="col-md-12">
 <div class="fondo-panel">
     <p>{{evento["nombre"]}}</p>
     <p>Visibilidad<span class="oi oi-eye" title "eye"></i></p>
     <p>Estado<i class="oi oi-check" title="check"></i></p>
-    <a type="button"  class="btn btn-warning" href="{{url_for('actualizar',id=evento["eventoId"])}}">Modificar Evento</a>
-    <a type="button" class="btn btn-light" href="{{url_for('eliminarEvento', id=evento["eventoId"])}}">Eliminar Evento</a>
+    <a type="button"  class="btn btn-warning" href="{{url_for('actualizar_evento',id=evento["eventoId"])}}">Modificar Evento</a>
+    <a type="button" class="btn btn-light" href="{{url_for('eliminar_evento_usuario', id=evento["eventoId"])}}">Eliminar Evento</a>
+</div>
+</div>
+</div>
 </div>
 
 
@@ -128,7 +134,7 @@
   <div class="media-body">
     <h3 class="mt-0 font-weight-bold blue-text oi oi-person">{{comentario.usuario.nombre}}</h3>
     <textarea class="form-control">{{comentario["contenido"]}}</textarea>
-    <a type="button"  href="{{url_for('eliminarComentario', id=comentario["comentarioId"])}}" class="btn btn-success boton-comentario" >Eliminar Comentario </a>
+    <a type="button" class="btn btn-success boton-comentario" href="{{url_for('eliminar_comentario_admin', id=comentario["comentarioId"])}}"  >Eliminar Comentario </a>
     </div>
 </div>
 {% endmacro %}
@@ -151,17 +157,6 @@
 	{{ campo.label }} <!-- Mostrar etiqueta -->
 	{{ campo(**kwargs)|safe }} <!-- Mostrar campo -->
 	{{mostrar_error(campo)}}  <!-- Llamar a macro que muestra el error -->
-{% endmacro %}
-
-<!-- Macro que se encarga de mostrar los campos tipo radio del formulario -->
-{% macro mostrar_campo_radio(campo) %}
-	{{ campo.label }} <!-- Mostrar etiqueta -->
-	<br/>
-	{% for subfield in campo %} <!--Recorrer cada una de las opciones -->
-			{{ subfield }}  <!-- Mostrar opción -->
-	  		{{ subfield.label }} <!-- Mostrar etiqueta -->
-	{% endfor %}
-	{{mostrar_error(campo)}} <!-- Llamar a macro que muestra el error -->
 {% endmacro %}
 
 

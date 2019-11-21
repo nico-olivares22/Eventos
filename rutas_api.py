@@ -93,7 +93,7 @@ def apiGetComentarioById(id):
     comentarios= db.session.query(Comentario).filter(Comentario.eventoId==Evento.eventoId,Comentario.eventoId==id,Evento.eventoId==id)
     return jsonify({ 'Comentarios': [comentario.a_json() for comentario in comentarios] })
 
-#curl -i -X DELETE -H "Accept: application/json" http://localhost:5000/api/eliminarComentarioApi/60
+#curl -i -X DELETE -H "Accept: application/json" http://localhost:5000/api/deletecomentario/60
 @app.route('/api/deletecomentario/<id>',methods=['DELETE'])
 @csrf.exempt
 def eliminarComentarioApi(id):

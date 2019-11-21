@@ -10,14 +10,6 @@ from flask_wtf.file import FileField, FileRequired, FileAllowed #Importa funcion
 #Clase de Registro
 class Registro(FlaskForm):
 
-
-    #Lista de opciones usada para select
-    #lista_opciones = [
-        #('1','Opción 1'),
-        #('2','Opción 2'),
-        #('3','Opción 3'),
-        #('4','Opción 4')
-    #]
     #Lista de opciones usada para radio button
     lista_sexo = [
         ('f','Femenino'),
@@ -53,13 +45,6 @@ class Registro(FlaskForm):
         validators.Required(message = "Completar email"),
         validators.Email( message ='Formato de mail incorrecto')
     ])
-
-
-
-    #bio = TextAreaField('Biografía')
-
-    #Definición de campo select
-    #opciones = SelectField('Opción', choices=lista_opciones)
 
     #Definición de campo submit
     submit1 = SubmitField("Registrarse")

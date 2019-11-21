@@ -1,5 +1,5 @@
 {% from "macros.html" import evento_comentario, eventodetallado %}
-{% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
+{% from "macros.html" import mostrar_campo, mostrar_campo_submit %}
 {% extends "cabecera_footer.html" %}
 {% block estilo %}
 <link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">
@@ -26,12 +26,12 @@
           <p><span class="oi oi-browser" title "map"></span>{{evento["tipo"]}}</p>
           <p><small class="">{{evento["descripcion"]}}</small></p>
 
-          
+
           {% if current_user.is_authenticated and not current_user.admin %}
           <button type="button" class="btn btn-warning boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
           {% endif %}
           {% if current_user.is_authenticated and current_user.admin %}
-          <button type="button" class="btn btn-warning boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
+          <button type="button" class="btn btn-warning boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button> <a type="button" class="btn btn-warning" href="{{url_for('eliminar_evento_admin',id=evento["eventoId"])}}">Eliminar Evento </a>
           {% endif %}
         </div>
       </div>
@@ -48,7 +48,7 @@
 
         <div class="modal-dialog modal-dialog-centered modalcoment1" role="document">
 
-          <form method="POST" action="{{ url_for('evento', id=evento["eventoId"]) }}" enctype="multipart/form-data">
+          <form method="POST" action="{{ url_for('ver_evento', id=evento["eventoId"]) }}" enctype="multipart/form-data">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
             <div class="modal-content modalcoment2">
@@ -76,13 +76,6 @@
 
 
 
-
-
-
-
-    <!--  <a type="button"  href="{{url_for('actualizar',id=evento["eventoId"])}}" class="btn btn-success boton-evento1">Actualizar Evento </a>-->
-
-
     </div>
     {% for evento in listaeventos %}
     {{ eventodetallado(evento) }}
@@ -90,27 +83,17 @@
   </div>
   <div class="row">
     <div class="col-md-12">
+
+
       <div class="comentario1">
         <h4>Comentarios</h4>
       </div>
-      <!--<div class="media">
-          <div class="media-body">
-            <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
-            officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
-            itaque.
-            <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
-            officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
-            itaque.
-            <h3 class="mt-0 font-weight-bold blue-text">@userx</h3>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Corporis odit minima eaque dignissimos recusandae
-            officiis commodi nulla est, tempore atque voluptas non quod maxime, iusto, debitis aliquid? Iure ipsum,
-            itaque.
-          </div>
-        </div>-->
+
       {% for comentario in listacomentarios %}
       {{ evento_comentario(comentario) }}
+      {% if comentario.usuarioId == current_user.usuarioId %}
+      <a type="button"class="btn-btn-light boton-comentario-usuario" href="{{url_for('eliminar_comentario_usuario',id=comentario["comentarioId"])}}">Eliminar comentario</a>
+      {% endif %}
       {% endfor %}
     </div>
   </div>

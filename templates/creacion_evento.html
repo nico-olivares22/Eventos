@@ -1,6 +1,6 @@
 
 {% extends "cabecera_footer.html" %}
-{% from "macros.html" import mostrar_campo,mostrar_campo_radio, mostrar_campo_submit %}
+{% from "macros.html" import mostrar_campo, mostrar_campo_submit %}
 {% block estilo %}
 <link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">
 {% endblock %}
@@ -10,13 +10,13 @@
   <div class="registro">
     <div class="row">
       <div class="col-md-12">
-        {% if (destino=="actualizar") %}
+        {% if (destino=="actualizar_evento") %}
         <div class="titulo">
           <h1>Actualizar</h1>
           <form method="POST" action="{{url_for(destino,id=evento["eventoId"])}}" enctype="multipart/form-data">
         </div>
         {% endif %}
-        {% if (destino=="crearevento") %}
+        {% if (destino=="crear_evento") %}
         <div class="titulo">
           <h1>Crear Evento</h1>
         </div>
@@ -40,10 +40,10 @@
           </div>
           <div class="form-group">
             <!-- Si el formulario es llamado para insertar mostrar el campo, sino mostrar la imagen -->
-  	    		{% if(destino=="crearevento") %}
+  	    		{% if(destino=="crear_evento") %}
   	      			{{ mostrar_campo(formulario_crear.imagen , class='form-control')}}
   	      	{% endif %}
-  	      	{% if(destino=="actualizar") %}
+  	      	{% if(destino=="actualizar_evento") %}
   	           <img style="width:130px;margin-left:20px;margin-bottom:-5px;" src="{{url_for('static', filename='imagenes/'+evento["imagen"])}}" >
   	      	{% endif %}
   	      	</div>
@@ -57,7 +57,4 @@
     </div>
   </div>
 </div>
-</form>
-
-</html>
 {% endblock %}

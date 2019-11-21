@@ -2,7 +2,7 @@ from flask import render_template,request, jsonify
 from app import app
 import datetime
 from datetime import date
-from clases import Inicio
+from formularios import Inicio
 
 #Manejar error de página no encontrada
 @app.errorhandler(404)
@@ -38,8 +38,3 @@ def escribir_log(error,acontecimiento):
     archivo.write(f"\n{datetime.datetime.now()}, {error}, Funcion: {acontecimiento}\n")
     archivo.close()
     #print(archivo)
-
-"""def error_mail(mensaje):
-    archivo_mail=open('error.log','a')
-    archivo.write(f"\n{datetime.datetime.now()},Error:{mensaje}")
-    archivo.close()"""

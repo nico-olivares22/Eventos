@@ -306,3 +306,8 @@ ul, ol {
   background-color: #F8F8FF;
   color:black;
 }
+.boton-comentario-usuario{
+  margin-top: 3px;
+  margin-bottom: 3px;
+  padding-top: 3px;
+}

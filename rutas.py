@@ -5,8 +5,8 @@ from flask import request #en filtro se usa
 from flask import render_template #importar templates
 from flask import flash #importar para mostrar mensajes flash
 from flask import redirect, url_for #importar para permitir redireccionar y generar url
-from clases import Registro #importar clase de formulario
-from clases import CrearEvento, Comentarios, Inicio, Filtro
+from formularios import Registro #importar clase de formulario
+from formularios import CrearEvento, Comentarios, Inicio, Filtro
 import datetime #importar funciones de fecha
 from werkzeug.utils import secure_filename #Importa seguridad nombre de archivo
 import os.path #importar para funciones de sistema
@@ -96,7 +96,7 @@ def registro():
 #Función crear evento, permite al usuario crear un evento
 @app.route('/crear-evento', methods=["POST", "GET"])
 @login_required
-def crearevento():
+def crear_evento():
     formulario_ingreso=Inicio() #Instanciar formulario de inicio
     formulario_crear = CrearEvento() #Instanciar formulario de CrearEvento
     if formulario_crear.validate_on_submit(): #Si el formulario ha sido enviado y es validado correctamente
@@ -109,14 +109,14 @@ def crearevento():
                     formulario_crear.descripcion.data,current_user.usuarioId) #Llama a la función crear evento para que el user lo cree
         print(filename)
         return redirect(url_for('pagina')) #Redirecciona a la función pagina
-    return render_template('creacion_evento.html', formulario_crear = formulario_crear, destino = "crearevento",
+    return render_template('creacion_evento.html', formulario_crear = formulario_crear, destino = "crear_evento",
                             formulario_ingreso=formulario_ingreso) #Utiliza el template de crear evento
 
 
 #Función que permite actualizar el evento, ya sea admin o user
 @app.route('/actualizar-evento/<id>', methods=["POST","GET"])
 @login_required
-def actualizar(id):
+def actualizar_evento(id):
     formulario_ingreso=Inicio() #Instanciar formulario ingreso
     evento=db.session.query(Evento).get(id) #consulta
     formulario_crear=CrearEvento(obj=evento) #crear un objeto
@@ -142,8 +142,12 @@ def actualizar(id):
             formulario_crear.opciones.data=evento.tipo
             formulario_crear.imagen.data=evento.imagen
             formulario_crear.descripcion.data=evento.descripcion
+            if evento.aprobado==True:#nuevo
+                evento=db.session.query(Evento).get(id)
+                evento.aprobado=False
+                actualizarEvento(evento)
     return render_template('creacion_evento.html',  formulario_crear=formulario_crear,formulario_ingreso=formulario_ingreso,
-                            destino = "actualizar",evento=evento)
+                            destino = "actualizar_evento",evento=evento)
 
 
 #Función de Pagina, muestra los eventos traido de la base
@@ -198,7 +202,7 @@ def pagina(pag=1, fecha_desde='', fecha_hasta='', opciones=''):
 #Función panel eventos usuario, permite elimanr eventos y verlos detalladamente
 @app.route('/mis-eventos-usuario')
 @login_required
-def miseventos():
+def mis_eventos_usuario():
     formulario_ingreso=Inicio() #instanciar form inicio
     listaeventos=db.session.query(Evento).filter(Evento.usuarioId==current_user.usuarioId).all() #consulta
     return render_template('mis_eventos_usuario.html',formulario_ingreso=formulario_ingreso, listaeventos=listaeventos)
@@ -206,7 +210,7 @@ def miseventos():
 #Función que permite ver el evento detallo por parte del user
 @app.route('/userevento/<id>', methods=["POST","GET"])
 #@login_required
-def evento(id):
+def ver_evento(id):
     formulario_ingreso = Inicio() #instanciar form inicio
     evento = db.session.query(Evento).filter(Evento.eventoId == id).one() #consulta
     listacomentarios = db.session.query(Comentario).filter(Comentario.eventoId == id).order_by(Comentario.fechahora).all() #consulta
@@ -214,14 +218,14 @@ def evento(id):
     if formulario_comentario.is_submitted(): #si el form es enviado correctamente
         mostrar_datos_comentario(formulario_comentario) #mostrar datos form
         crear_comentario=crearComentario(formulario_comentario.campocomentario.data,id,current_user.usuarioId) #llama a la funcion crear comentario para que el user lo cree
-        return redirect(url_for('evento', id=id)) #redirecciona a la misma función
+        return redirect(url_for('ver_evento', id=id)) #redirecciona a la misma función
     return render_template('evento.html', formulario_comentario=formulario_comentario, id=id, evento=evento,
                             formulario_ingreso=formulario_ingreso, listacomentarios=listacomentarios) #Muestra el template
 
 #Función que le permite ver al admin un evento en particular
 @app.route('/evento-admin/<id>')
 @login_required
-def user_admin(id):
+def ver_evento_admin(id):
     if current_user.is_admin()==False:
         return redirect(url_for('pagina'))
     formulario_ingreso=Inicio() #instanciar form inicio
@@ -233,7 +237,7 @@ def user_admin(id):
 #Función que permite al admin tener un panel y saber que eventos estan pendientes de aprobar
 @app.route('/eventos-admin')
 @login_required
-def aprobareventos():
+def panel_admin():
     if current_user.is_admin()==False:
         return redirect(url_for('pagina'))
     formulario_ingreso=Inicio() #Instanciar form inicio
@@ -244,6 +248,8 @@ def aprobareventos():
 #Función que permite al admin aprobar eventos
 @app.route('/evento-admin/aprobar/<id>')
 def aprobar_evento(id):
+    if current_user.is_admin()==False:
+        return redirect(url_for('pagina'))
     evento=db.session.query(Evento).get(id)
     evento.aprobado=True
     email=evento.usuario.email
@@ -255,11 +261,13 @@ def aprobar_evento(id):
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en aprobar_evento en rutas.py")
     flash('Evento Aprobado')
-    return redirect(url_for('aprobareventos',evento=evento))
+    return redirect(url_for('panel_admin',evento=evento))
 
 #Función que permite al admin eliminar los eventos
 @app.route('/evento-admin/eliminar/<id>')
 def eliminar_evento_admin(id):
+    if current_user.is_admin()==False:
+        return redirect(url_for('pagina'))
     evento=db.session.query(Evento).get(id)
     db.session.delete(evento)
     try:
@@ -267,11 +275,13 @@ def eliminar_evento_admin(id):
     except SQLAlchemyError as e:
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en eliminar_evento_admin en rutas.py")
-    return redirect(url_for('aprobareventos',evento=evento))
+        flash('Evento Eliminado')
+    return redirect(url_for('panel_admin',evento=evento))
 
 #Función que permite eliminar Evento por id
 @app.route('/evento/eliminar/<id>')
-def eliminarEvento(id):
+@login_required
+def eliminar_evento_usuario(id):
     evento= db.session.query(Evento).get(id)
     #Eliminar de la db
     db.session.delete(evento)
@@ -281,11 +291,13 @@ def eliminarEvento(id):
     except SQLAlchemyError as e:
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en eliminarEvento en rutas.py")
-    return redirect(url_for('miseventos'))
+    return redirect(url_for('mis_eventos_usuario'))
 
 #Función que permite al admin eliminar comentario
 @app.route('/comentario/eliminar/<id>')
-def eliminarComentario(id):
+def eliminar_comentario_admin(id):
+    if current_user.is_admin()==False:
+        return redirect(url_for('pagina'))
     #Obtener comentario por id
     comentario = db.session.query(Comentario).get(id)
     eventoID=comentario.eventoId
@@ -298,7 +310,18 @@ def eliminarComentario(id):
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en eliminarComentario en rutas.py")
     flash('EL comentario ha sido borrado con Éxito')
-    return redirect(url_for('user_admin',id=eventoID))
-@app.route('/error')
-def error_1():
-    return render_template('500.html')
+    return redirect(url_for('ver_evento_admin',id=eventoID))
+
+@app.route('/comentario/eliminar/usuario/<id>')
+@login_required
+def eliminar_comentario_usuario(id):
+    comentario = db.session.query(Comentario).get(id)
+    eventoID= comentario.eventoId
+    db.session.delete(comentario)
+    try:
+        db.session.commit()
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        escribir_log(str(e._message()), "Error en base de datos en eliminar_comentario_usuario en rutas.py")
+    flash('El comentario ha sido borrado')
+    return redirect(url_for('ver_evento',id=eventoID))
