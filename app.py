@@ -3,13 +3,13 @@ from flask_sqlalchemy import SQLAlchemy #Incluye sqlAlchemy
 from sqlalchemy import or_
 from flask_wtf import CSRFProtect #importar para proteccion CSRF
 from dotenv import load_dotenv #carga variables de entorno
-import os
+import os #para cargar variables de entorno
 from flask_mail import Mail, Message  # Importar para enviar Mail
 from flask_login import LoginManager
 
 
-app = Flask(__name__)
-load_dotenv()
+app = Flask(__name__) #se crea la app Flask
+load_dotenv() #permite acceder a las variables de entorno
 
 #Sicronización con la BD
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True #Sigue las modificaciones en tiempo real
@@ -17,11 +17,11 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True #Sigue las modificaciones en
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://'+os.getenv('DB_USERNAME')+':'+os.getenv('DB_PASS')+'@localhost/consultas'
 #Instancia que representa la base de datos
 db = SQLAlchemy(app)
-csrf = CSRFProtect(app) #Iniciar protección CSRF
+csrf = CSRFProtect(app) #Iniciar protección CSRF,  es un método por el cual un usuario malintencionado intenta hacer que tus usuarios, sin saberlo, envíen datos que no quieren enviar.
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY') #clave secreta
 
 
-#Configuración mail
-# Configuraciones de mail
+#Configuraciones de Mail
 app.config['MAIL_HOSTNAME'] = 'localhost'
 app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
 app.config['MAIL_PORT'] = 587
@@ -31,10 +31,9 @@ app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['FLASKY_MAIL_SENDER'] = 'Master Eventos <Mastereventos@eventos.com>'
 
 
-mail = Mail(app)  # Inicializar mail
-login_manager = LoginManager(app)
-#csrf = CSRFProtect(app)
-app.secret_key = os.getenv('SECRET_KEY')
+mail = Mail(app)  #Inicializar objeto de aplicacion Mail
+login_manager = LoginManager(app) #Inicializar objeto de aplicacion LoginManager
+app.secret_key = os.getenv('SECRET_KEY') #Accedere a la clave secreta
 
 
 
@@ -42,4 +41,4 @@ if __name__ == '__main__': #Asegura que solo se ejectue el servidor cuando se ej
     from rutas import *
     from rutas_api import *
     from errores import *
-    app.run(debug=True)
+    app.run(debug=False)

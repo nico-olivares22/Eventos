@@ -86,3 +86,21 @@
 2019-11-21 11:28:00.185920, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError m5sm1630675qtu.3 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
 
 2019-11-21 11:33:00.362749, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError j71sm1450710qke.90 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
+
+2019-11-21 17:18:32.454784, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError n21sm2276071qtn.33 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
+
+2019-11-21 17:23:48.097848, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError 23sm1969150qkj.52 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
+
+2019-11-21 17:26:05.635956, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError j4sm1904663qkk.4 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
+
+2019-11-21 17:26:07.021415, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError x30sm2242680qtc.7 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
+
+2019-11-21 17:26:08.001019, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError z70sm1887788qkb.60 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
+
+2019-11-21 17:29:47.610989, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError a62sm1956487qkf.81 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
+
+2019-11-21 17:32:06.413859, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError z3sm2105018qtu.83 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
+
+2019-11-21 19:39:57.186099, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError c16sm2395827qtm.48 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
+
+2019-11-21 20:54:17.894016, Error 500 Problema Interno, Funcion: Unknown

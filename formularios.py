@@ -94,7 +94,7 @@ class CrearEvento(FlaskForm):
     ])
 
     #Definición de campo submit
-    submit = SubmitField("CrearEvento")
+    submit = SubmitField("EnviarEvento")
 class Comentarios(FlaskForm):
     campocomentario= StringField('Comentario',
     [

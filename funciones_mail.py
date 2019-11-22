@@ -7,11 +7,12 @@ from errores import escribir_log
 import smtplib,os
 
 def enviarMail(to, subject, template, **kwargs):
+    #Configurar asunto, emisor y destinatarios
     mensaje = Message(subject, sender=app.config['FLASKY_MAIL_SENDER'], recipients=[to])
-    mensaje.body = render_template('mail/' + template + '.txt', **kwargs)
-    mensaje.html = render_template('mail/' + template + '.html', **kwargs)
+    mensaje.body = render_template('mail/' + template + '.txt', **kwargs) #accede al txt de la carpeta mail donde está el texto que va al html
+    mensaje.html = render_template('mail/' + template + '.html', **kwargs) #accede al html de envio que le llega al user
     thr = Thread(target=mail_enviado, args=[app, mensaje])
-    # Iniciar hilo
+    # Iniciar hilo para mandar mail rápido
     thr.start()
 
 def mail_enviado(app, mensaje):

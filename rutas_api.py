@@ -30,7 +30,7 @@ def apiGetEventoById(id):
 #Actualizar Evento
 #curl -i -X PUT -H "Content-Type:application/json" -H "Accept:application/json" http://localhost:5000/admin/api/evento/12 -d '{"nombre":"Maria"}'
 @app.route('/admin/api/evento/<id>', methods=['PUT'])
-@csrf.exempt
+@csrf.exempt #para deshabilitar la protección CSRF para una vista en particular
 def apiActualizarEvento(id):
     evento =  db.session.query(Evento).get_or_404(id)
     evento.nombre = request.json.get('nombre', evento.nombre)

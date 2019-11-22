@@ -1,6 +1,6 @@
 from app import db,app
 from modelos import *
-from flask import Flask, redirect
+from flask import redirect
 from flask import flash #importar para mostrar mensajes flash
 from flask_login import login_required, login_user, logout_user, current_user,LoginManager
 from sqlalchemy.exc import SQLAlchemyError

@@ -18,8 +18,6 @@
         <form method="POST" action="{{ url_for("registro") }}" enctype="multipart/form-data">
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
-          <!-- va lo que saque -->
-
           <div class="form-group">
             <!--Llama a macro para mostrar campo, pasa clase a palicar por parámetro -->
             {{ mostrar_campo(formulario.nombre, class='form-control' )}}
@@ -43,17 +41,7 @@
             {{ mostrar_campo(formulario.confirmar , class='form-control')}}
           </div>
 
-
-          <!--	<div class="form-group">
-							<div class="form-check">
-								<input class="form-check-input is-invalid" type="checkbox" value="" id="invalidCheck3" required>
-								<label class="form-check-label" for="invalidCheck3">
-									Aceptar los terminos y condiciones
-								</label>
-							</div>-->
-          <!--<div class="invalid-feedback">
-								Ustede debe aceptar los terminos.
-							</div>-->
+          
           <div class="form-group">
             {{ mostrar_campo_submit(formulario.submit1 , class='btn btn-warning')}}
           </div>

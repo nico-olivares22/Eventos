@@ -30,6 +30,17 @@
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
           <a href="{{url_for('pagina')}}" type="button" class="btn btn-light boton-iniciar">Home</a>
+            {% if current_user.is_authenticated and current_user.admin %}
+           <img src="{{url_for('static', filename = 'imagenes/persona.png')}}" width="20" height="20" style="text-align:center" class="persona" alt="persona">
+            <a style="font-weight: bold; color:white;">{{ current_user.nombre }}</a>
+
+           {% endif %}
+           {% if current_user.is_authenticated and not current_user.admin %}
+          <img src="{{url_for('static', filename = 'imagenes/persona.png')}}" width="20" height="20" class="persona" alt="persona">
+          <a style="font-weight: bold; color:white;">{{ current_user.nombre }}</a>
+
+          {% endif %}
+
         </li>
 
       </ul>
@@ -41,7 +52,6 @@
           <a href="{{url_for('panel_admin')}}" type="button" class="btn btn-warning boton-miseventos">AprobarEventos</a>
         </li>
         <a href="{{url_for('logout')}}" class="btn btn-light my-2 my-sm-0 boton-logout" type="submit">Cerrar Sesión</a>
-        <p style="color: red"><span class="oi oi-person" title "calendar"></span> Hola {{ current_user.nombre }}!!</p>
         {% endif %}
         {% if current_user.is_authenticated and not current_user.admin %}
         <li class="nav-item active">
@@ -51,8 +61,6 @@
           <a href="{{url_for('mis_eventos_usuario')}}" type="button" class="btn btn-warning boton-miseventos">MisEventos</a>
         </li>
         <a href="{{url_for('logout')}}" class="btn btn-light my-2 my-sm-0 boton-logout" type="submit">Cerrar Sesión</a>
-
-        <p style="color: white"><span class="oi oi-person" title "calendar"></span> Hola {{ current_user.nombre }}!!</p>
         {% endif %}
 
         {% if not current_user.is_authenticated %}

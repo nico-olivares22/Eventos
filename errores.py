@@ -20,7 +20,6 @@ def page_not_found(e):
 #Manejar error de error interno
 @app.errorhandler(500)
 def internal_server_error(e):
-    print(e)
     escribir_log("Error 500 Problema Interno", "Unknown")
     #Si la solicitud acepta json y no HTML
     if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
