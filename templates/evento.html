@@ -88,7 +88,7 @@
       {% for comentario in listacomentarios %}
       {{ evento_comentario(comentario) }}
       {% if comentario.usuarioId == current_user.usuarioId %}
-      <a type="button"class="btn-btn-light boton-comentario-usuario" href="{{url_for('eliminar_comentario_usuario',id=comentario["comentarioId"])}}">Eliminar comentario</a>
+      <a type="button"class="btn-btn-warning boton-comentario-usuario"  href="{{url_for('eliminar_comentario_usuario',id=comentario["comentarioId"])}}">Eliminar comentario</a>
       {% endif %}
       {% endfor %}
     </div>

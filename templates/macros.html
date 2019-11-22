@@ -53,10 +53,10 @@
 
 {% macro evento_comentario(comentario) %}
 <div class="media">
-  <div class="media-body">
+  <div class="media-body" style="margin-top:10px;">
     <h3 class="mt-0 font-weight-bold blue-text oi oi-person">{{comentario.usuario.nombre}}</h3>
     <h3 class="mt-0 font-weight-bold blue-text">{{comentario["fechahora"]}}</h3>
-    <textarea class="form-control">{{comentario["contenido"]}}</textarea>
+    <textarea readonly class="form-control">{{comentario["contenido"]}}</textarea>
     </div>
 </div>
 {% endmacro %}
@@ -113,7 +113,7 @@
 <div class="media">
   <div class="media-body">
     <h3 class="mt-0 font-weight-bold blue-text oi oi-person">{{comentario.usuario.nombre}}</h3>
-    <textarea class="form-control">{{comentario["contenido"]}}</textarea>
+    <textarea readonly class="form-control">{{comentario["contenido"]}}</textarea>
     <a type="button" class="btn btn-success boton-comentario" href="{{url_for('eliminar_comentario_admin', id=comentario["comentarioId"])}}"  >Eliminar Comentario </a>
     </div>
 </div>

@@ -104,3 +104,7 @@
 2019-11-21 19:39:57.186099, (530, b'5.5.1 Authentication Required. Learn more at\n5.5.1  https://support.google.com/mail/?p=WantAuthError c16sm2395827qtm.48 - gsmtp', '=?utf-8?q?Master_Eventos?= <Mastereventos@eventos.com>'), Funcion: Error en funciones_mail
 
 2019-11-21 20:54:17.894016, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-21 23:13:31.342588, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-21 23:14:09.502177, Error 500 Problema Interno, Funcion: Unknown
