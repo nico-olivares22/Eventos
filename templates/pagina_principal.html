@@ -8,7 +8,7 @@
 {% endblock %}
 {% block contenido %}
 <div class="container" id="filtro">
-
+  <!--Filtro form -->
 		<form method="GET" action="{{ url_for('pagina') }}" enctype="multipart/form-data">
 			<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 			<div class="form-group">
@@ -45,20 +45,27 @@
 <div class="paginacion_original">
 
        {% if eventos.has_prev %}
+       <!--Al llamar a index enviar los datos cargados en el formulario-->
    <a href="{{ url_for('pagina', pag=eventos.prev_num,fecha_desde=filtro.fecha_desde.data,fecha_hasta=filtro.fecha_hasta.data,opciones=filtro.opciones.data) }}"> Anterior </a>
+     <!--Si hay pagina anterior llamo a paginacion pero con la pagina anterior, sino llamo a un texto Anterior-->
            {% endif %}
 
 
            {% for i in range(1,(eventos.pages+1)) %}
            {% if eventos.page == i %}
            <a class="active" href="{{ url_for('pagina', pag=i) }}">{{i}}</a>
+            <!--Si la pagina actual es coincidente con el indice i muestro solo el texto del numero-->
            {% else %}
+           <!--Al llamar a index enviar los datos cargados en el formulario-->
            <a href="{{ url_for('pagina', pag=i,fecha_desde=filtro.fecha_desde.data,fecha_hasta=filtro.fecha_hasta.data,opciones=filtro.opciones.data) }}">{{i}}</a>
+            <!--Si no llamo a la pagina con el valor del numero de pagina-->
            {% endif %}
            {% endfor %}
 
-{% if eventos.has_next %}
-   <a href="{{ url_for('pagina', pag=eventos.next_num,fecha_desde=filtro.fecha_desde.data,fecha_hasta=filtro.fecha_hasta.data,opciones=filtro.opciones.data) }}"> Siguiente </a>
+           {% if eventos.has_next %}
+           <!--Al llamar a index enviar los datos cargados en el formulario-->
+           <a href="{{ url_for('pagina', pag=eventos.next_num,fecha_desde=filtro.fecha_desde.data,fecha_hasta=filtro.fecha_hasta.data,opciones=filtro.opciones.data) }}"> Siguiente </a>
+           <!--Si hay pagina Siguiente llamo a paginacion pero con la pagina Siguiente, sino llamo a un texto Siguiente-->
            {% endif %}
 
        </div>

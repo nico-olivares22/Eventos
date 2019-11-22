@@ -21,22 +21,26 @@ class Evento(db.Model): #El objeto heredan el modelo para poder trabajar con los
     def __repr__(self):
         return '<Evento: %r %r %r %r %r %r %r>' % (self.eventoId,self.nombre, self.fecha,self.hora, self.descripcion, self.imagen, self.tipo)
 
-    #Convertir objeto en JSON
+    #Convertir objeto EVENTO  en JSON
     def a_json(self):
         evento_json = {
             'eventoId': url_for('apiGetEventoById', id=self.eventoId, _external=True), #ruta para acceder al evento
             'nombre': self.nombre,
             'fecha': self.fecha,
             'tipo': self.tipo,
+            'descripcion': self.descripcion,
+            'aprobado': self.aprobado
         }
         return evento_json
-    @staticmethod #El self es como funciones planas excepto que las puede llamar desde la clase o desde una instancia de la clase:
+    @staticmethod #El self es como funciones planas excepto que las puede llamar desde la clase o desde una instancia de la clase: No hace falta instanciar la clase
     #Convertir JSON a objeto
     def desde_json(evento_json): #clave valor
         nombre = evento_json.get('nombre')
         fecha = evento_json.get('fecha')
         tipo = evento_json.get('tipo')
-        return Evento(nombre=nombre, fecha=fecha, tipo=tipo)
+        descripcion = evento_json.get('descripcion')
+        aprobado = evento_json.get('aprobado')
+        return Evento(nombre=nombre, fecha=fecha, tipo=tipo, descripcion=descripcion, aprobado=aprobado)
 
 class Usuario(UserMixin,db.Model):
     usuarioId = db.Column(db.Integer, primary_key=True)
@@ -45,10 +49,14 @@ class Usuario(UserMixin,db.Model):
     email = db.Column(db.String(80), nullable=False)
     password = db.Column(db.String(130), nullable=False)
     admin = db.Column(db.Boolean, nullable=False)
-    #Relación entre evento y usuario
+    #Relación entre evento y usuario 1 a muchos
     eventos=db.relationship("Evento", back_populates="usuario", cascade="all, delete-orphan")
-    #Relación entre usuario y comentario
+    #Relación entre usuario y comentario 1 a muchos
     comentarios=db.relationship("Comentario", back_populates="usuario", cascade="all, delete-orphan")
+
+    # passworden es la contraseña no cifrada.
+    #password es la contraseña cifrada
+
     #No permitir leer la pass de un usuario
     @property #que no se pueda leer la contraseña asi nomas
     def passworden(self):
@@ -62,16 +70,18 @@ class Usuario(UserMixin,db.Model):
     #Al verififcar pass comparar hash del valor ingresado con el de la db
     def verificar_pass(self, passworden):
         return check_password_hash(self.password, passworden)
-    def is_admin(self):
+    def is_admin(self): #Comprobamos si el user es admin
         auxiliar=False
         if self.admin==1:
             auxiliar=True
         return auxiliar
+
+    #función que determina que se mostrará cuando se imprime el objeto
     def __repr__(self):
         return '<Usuario: %r %r %r %r %r %r >' % (self.usuarioId,self.nombre,self.apellido, self.email, self.password,self.admin)
 @login_manager.user_loader
 def load_user(user_id):
-    return Usuario.query.get(int(user_id))
+    return Usuario.query.get(int(user_id)) #especificamos que el usuario se carga por id
 
 class Comentario(db.Model):
     comentarioId = db.Column(db.Integer, primary_key=True)

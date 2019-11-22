@@ -36,6 +36,9 @@ def apiActualizarEvento(id):
     evento.nombre = request.json.get('nombre', evento.nombre)
     evento.fecha = request.json.get('fecha', evento.fecha)
     evento.tipo = request.json.get('tipo', evento.tipo)
+    evento.descripcion = request.json.get('descripcion', evento.descripcion)
+    evento.aprobado = request.json.get('aprobado',evento.aprobado)
+    evento.aprobado=False
     db.session.add(evento)
     try:
         db.session.commit()

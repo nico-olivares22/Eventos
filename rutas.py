@@ -1,5 +1,5 @@
-from funciones import *
-from modelos import *
+from funciones_basededatos import * #importamos funciones BD
+from modelos import * #importamos las clases que representan nuestras tablas en la BD
 from flask import request#,render_template,flash,redirect,url_for
 from formularios import * #importa todos los formularios
 import datetime #importar funciones de fecha
@@ -9,8 +9,8 @@ from random import randint #importa funcion random que sera utilizada para guard
 from app import app,db,login_manager #importa base de datos, app flask y la de login_manager
 from funciones_mail import *
 from flask_login import login_required, login_user, logout_user, current_user,LoginManager
-from sqlalchemy.exc import SQLAlchemyError
-from errores import escribir_log
+from sqlalchemy.exc import SQLAlchemyError #se importa para poder trabajar con el error de la base de datos
+from errores import escribir_log #función de escribir en el log
 
 #Función que sobreescribe el método al intentar ingresar a una ruta no autorizada
 @login_manager.unauthorized_handler
@@ -147,7 +147,7 @@ def pagina(pag=1, fecha_desde='', fecha_hasta='', opciones=''):
         #Loguear Usuario
                 login_user(usuario,False)
                 user_name=formulario_ingreso.email.data
-                flash('Usuario Ingresado Correctamente', format(user_name)) #muestra mensaje
+                flash('Welcome to MasterEventos {}'.format(user_name)) #muestra mensaje
                 mostrar_datos_inicio(formulario_ingreso) #mostrar datos
                 return redirect(url_for('pagina')) #redirecciona a la funcion pagina
         else:
@@ -157,7 +157,7 @@ def pagina(pag=1, fecha_desde='', fecha_hasta='', opciones=''):
     filtro=Filtro() #instanciar form filtro
     pag_tam = 6
      #Si se realiza la búsqueda por formulario de filtro
-    if(request.args):
+    if(request.args): #el request obtenemos los argumentos que pasamos en el formulario, si no coincide el primer devuelve NONE
         fecha_desde= request.args.get('fecha_desde',None)
         fecha_hasta = request.args.get('fecha_hasta',None)
         opciones = request.args.get('opciones',None)

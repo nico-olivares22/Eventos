@@ -6,7 +6,7 @@ from flask_login import login_required, login_user, logout_user, current_user,Lo
 from sqlalchemy.exc import SQLAlchemyError
 from errores import escribir_log
 
-#Función que permite lsitar los eventos de la BD
+#Función que permite listar los eventos de la BD
 def eventos_listar():
     lista_evento=db.session.query(Evento).all()
     return lista_evento

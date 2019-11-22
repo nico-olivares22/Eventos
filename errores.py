@@ -30,6 +30,19 @@ def internal_server_error(e):
     #Sino responder con template HTML
     return render_template('500.html'), 500
 
+#Manejar error de metodo no permitido
+@app.errorhandler(405)
+def metodo_no_permitido(e):
+    formulario_ingreso=Inicio()
+    #Si la solicitud acepta json y no HTML
+    if request.accept_mimetypes.accept_json and not request.accept_mimetypes.accept_html:
+        #Responder con JSON
+        response = jsonify({'error': 'internal server error'})
+        response.status_code = 405
+        return response
+    #Sino responder con template HTML
+    return render_template('405.html',formulario_ingreso=formulario_ingreso), 405
+
 
 
 def escribir_log(error,acontecimiento):
