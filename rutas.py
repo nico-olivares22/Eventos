@@ -1,6 +1,6 @@
 from funciones_basededatos import * #importamos funciones BD
-from modelos import * #importamos las clases que representan nuestras tablas en la BD
-from flask import request#,render_template,flash,redirect,url_for
+#from modelos import * #importamos las clases que representan nuestras tablas en la BD
+#from flask import request#,render_template,flash,redirect,url_for
 from formularios import * #importa todos los formularios
 import datetime #importar funciones de fecha
 from werkzeug.utils import secure_filename #Importa seguridad nombre de archivo
@@ -10,7 +10,8 @@ from app import app,db,login_manager #importa base de datos, app flask y la de l
 from funciones_mail import *
 from flask_login import login_required, login_user, logout_user, current_user,LoginManager
 from sqlalchemy.exc import SQLAlchemyError #se importa para poder trabajar con el error de la base de datos
-from errores import escribir_log #función de escribir en el log
+from errores import * #importando todo
+from funciones_mostrar_datos import *
 
 #Función que sobreescribe el método al intentar ingresar a una ruta no autorizada
 @login_manager.unauthorized_handler
@@ -18,29 +19,6 @@ def unauthorized_callback():
     flash('Debe iniciar sesión para continuar.','warning')
     #Redireccionar a la página que contiene el formulario de login
     return redirect(url_for('pagina'))
-
-
-#Funciones que muestras los datos obtenidos del envío de formularios
-def mostrar_datos(formulario):
-    print(formulario.nombre.data)
-    print(formulario.apellido.data)
-    print(formulario.password.data)
-    print(formulario.email.data)
-def mostrar_datos_crear(formulario_crear):
-    print(formulario_crear.titulo.data)
-    print(formulario_crear.fechaEven.data)
-    print(formulario_crear.hora.data)
-    print(formulario_crear.opciones.data)
-    print(formulario_crear.imagen.data)
-    print(formulario_crear.descripcion.data)
-def mostrar_datos_inicio(formulario_ingreso):
-    print(formulario_ingreso.email.data)
-
-def mostrar_datos_comentario(formulario_comentario):
-    print(formulario_comentario.campocomentario.data)
-
-def mostrar_datos_filtro(filtro):
-    print(filtro.opciones.data)
 
 
 #Logout
@@ -69,7 +47,9 @@ def registro():
         if validar_mailExistente(formulario.email.data):
             flash('Cuenta creada correctamente', 'success') #Mostrar mensaje
             mostrar_datos(formulario)  #Imprimir datos por consola
-            crearUsuario(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data) #Llama a la función de la base para cargarla a la misma
+            usuario=crearUsuario(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data) #Llama a la función de la base para cargarla a la misma
+            if usuario==False:
+                return render_template('500.html')
             email=formulario.email.data
             enviarMail(email, 'Bienvenido a MasterEventos', 'mensaje', formulario=formulario)
             return redirect(url_for('pagina')) #Redirecciona a la función index
@@ -91,8 +71,10 @@ def crear_evento():
         f.save(os.path.join('static/imagenes/', filename)) #Guardar imagen en sistema
         flash('Evento Creado Exitosamente') #Mostrar mensaje
         mostrar_datos_crear(formulario_crear)  #Imprimir datos por consola
-        crearEvento(formulario_crear.titulo.data,formulario_crear.fechaEven.data,formulario_crear.hora.data,formulario_crear.opciones.data,filename,
+        evento=crearEvento(formulario_crear.titulo.data,formulario_crear.fechaEven.data,formulario_crear.hora.data,formulario_crear.opciones.data,filename,
                     formulario_crear.descripcion.data,current_user.usuarioId) #Llama a la función crear evento para que el user lo cree
+        if evento == False:
+            return render_template('500.html')
         return redirect(url_for('pagina')) #Redirecciona a la función pagina
     return render_template('creacion_evento.html', formulario_crear = formulario_crear, destino = "crear_evento",
                             formulario_ingreso=formulario_ingreso) #Utiliza el template de crear evento
@@ -114,7 +96,9 @@ def actualizar_evento(id):
         evento.tipo=formulario_crear.opciones.data
         evento.imagen=formulario_crear.imagen.data
         evento.descripcion=formulario_crear.descripcion.data
-        actualizarEvento(evento)
+        evento=actualizarEvento(evento)
+        if evento == False:
+            return render_template('500.html')
         mostrar_datos_crear(formulario_crear)
         return redirect(url_for('pagina'))
     else: #sino es validado (cuando el user lo modifica)
@@ -199,7 +183,9 @@ def ver_evento(id):
     formulario_comentario = Comentarios() #instanciar form comentario
     if formulario_comentario.is_submitted(): #si el form es enviado correctamente
         mostrar_datos_comentario(formulario_comentario) #mostrar datos form
-        crear_comentario=crearComentario(formulario_comentario.campocomentario.data,id,current_user.usuarioId) #llama a la funcion crear comentario para que el user lo cree
+        comentario=crear_comentario=crearComentario(formulario_comentario.campocomentario.data,id,current_user.usuarioId) #llama a la funcion crear comentario para que el user lo cree
+        if comentario==False:
+            return render_template('500.html')
         return redirect(url_for('ver_evento', id=id)) #redirecciona a la misma función
     return render_template('evento.html', formulario_comentario=formulario_comentario, id=id, evento=evento,
                             formulario_ingreso=formulario_ingreso, listacomentarios=listacomentarios) #Muestra el template
@@ -225,6 +211,8 @@ def panel_admin():
     eventos_pendientes= db.session.query(Evento).filter(Evento.aprobado==False).all() #trae todos los eventos pendientes de aprobación
     return render_template('mis_eventos_admin.html',eventos_aprobados=eventos_aprobados,eventos_pendientes=eventos_pendientes, formulario_ingreso=formulario_ingreso)
 
+#Funciones BASE DE DATOS
+
 #Función que permite al admin aprobar eventos
 @app.route('/evento-admin/aprobar/<id>')
 def aprobar_evento(id):
@@ -240,6 +228,7 @@ def aprobar_evento(id):
     except SQLAlchemyError as e:
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en aprobar_evento en rutas.py")
+        return render_template('500.html')
     flash('Evento Aprobado')
     return redirect(url_for('panel_admin',evento=evento))
 
@@ -256,6 +245,7 @@ def eliminar_evento_admin(id):
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en eliminar_evento_admin en rutas.py")
         flash('Evento Eliminado')
+        return render_template('500.html')
     return redirect(url_for('panel_admin',evento=evento))
 
 #Función que permite eliminar Evento por id
@@ -271,6 +261,7 @@ def eliminar_evento_usuario(id):
     except SQLAlchemyError as e:
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en eliminarEvento en rutas.py")
+        return render_template('500.html')
     return redirect(url_for('mis_eventos_usuario'))
 
 #Función que permite al admin eliminar comentario
@@ -289,6 +280,7 @@ def eliminar_comentario_admin(id):
     except SQLAlchemyError as e:
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en eliminarComentario en rutas.py")
+        return render_template('500.html')
     flash('EL comentario ha sido borrado con Éxito')
     return redirect(url_for('ver_evento_admin',id=eventoID))
 
@@ -304,5 +296,6 @@ def eliminar_comentario_usuario(id):
         #sino queres guardar nada
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en eliminar_comentario_usuario en rutas.py")
+        return render_template('500.html')
     flash('El comentario ha sido borrado')
     return redirect(url_for('ver_evento',id=eventoID))

@@ -1,4 +1,4 @@
-{% from "macros.html" import mostrar_evento,mostrar_campo,mostrar_campo_submit %}
+{% from "macros.html" import mostrar_evento,mostrar_campo,mostrar_campo_submit with context %}
 {% extends "cabecera_footer.html" %}
 {% block estilo %}
  <link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">

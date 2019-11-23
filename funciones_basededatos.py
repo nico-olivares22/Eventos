@@ -1,6 +1,6 @@
 from app import db,app
 from modelos import *
-from flask import redirect
+from flask import redirect, render_template
 from flask import flash #importar para mostrar mensajes flash
 from flask_login import login_required, login_user, logout_user, current_user,LoginManager
 from sqlalchemy.exc import SQLAlchemyError
@@ -19,7 +19,6 @@ def eventos_listar():
 
 
 #Función que permite crear un evento y guardarlo en la base de datos
-@app.route('/evento/crear<eventoId>/<nombre>/<fechahora>/<tipo>/<imagen>/<descripcion>/<UsuarioId>')
 @login_required
 def crearEvento(titulo,fechaEven,hora,tipo,imagen,descripcion,usuarioId):
     usuario=db.session.query(Usuario).get(usuarioId)
@@ -32,10 +31,10 @@ def crearEvento(titulo,fechaEven,hora,tipo,imagen,descripcion,usuarioId):
     except SQLAlchemyError as e:
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en crearEvento en funciones.py")
-    #return render_template('evento.html',evento=evento)
-
+        return False
+        #return render_template('500.html')
+    return evento
 #Función que permite actualizar el evento
-@app.route('/evento/actualizar/<evento>')
 @login_required
 def actualizarEvento(evento):
     db.session.add(evento)
@@ -44,12 +43,11 @@ def actualizarEvento(evento):
     except SQLAlchemyError as e:
         db.session.rollback()
         escribir_log(e._message, "error en base de datos en actualizarEvento en funciones.py")
-
+        return False
 
 
 
 #Función que permite crear comentario
-@app.route('/comentario/crear/<eventoId>/<texto>/<fechahora>')
 @login_required
 def crearComentario(campocomentario,eventoId,usuarioId):
     usuario=db.session.query(Usuario).get(usuarioId)
@@ -65,10 +63,10 @@ def crearComentario(campocomentario,eventoId,usuarioId):
     except SQLAlchemyError as e:
         db.session.rollback()
         escribir_log(e._message, "error en base de datos en crearComentario en funciones.py")
-
+        return False
+    return comentario
 
 #Función que permite al user registrarse en la BD
-@app.route('/usuario/crear/<nombre>/<apellido>/<email>/<password>')
 def crearUsuario(nombre,apellido,email,password,admin=False):
     #Crear una persona
     usuario = Usuario(nombre=nombre, apellido=apellido,email=email,passworden=password,admin=admin)
@@ -80,6 +78,8 @@ def crearUsuario(nombre,apellido,email,password,admin=False):
     except SQLAlchemyError as e:
         db.session.rollback()
         escribir_log(e._message, "error en base de datos en crearUsuario en funciones.py")
+        return False
+    return usuario
 
 @app.route('/errorbase')
 def probar_Error():

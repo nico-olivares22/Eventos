@@ -9,7 +9,11 @@
     <p class="card-text"><span class="oi oi-calendar" title "calendar"></span>{{evento["fecha"].strftime('%d-%m-%Y')}}</p>
     <p class="card-text"><span class="oi oi-clock" title "clock"></span>{{evento["hora"]}}</p>
     <p class="card-text"><span class="oi oi-browser" title "map"></span>{{evento["tipo"]}}</p>
+      {% if current_user.admin==False or not current_user.is_authenticated %}
     <a  type="button" href="{{url_for('ver_evento',id=evento["eventoId"])}}" class="btn btn-danger">Ver Evento</a>
+    {% else %}
+    <a  type="button" href="{{url_for('ver_evento_admin',id=evento["eventoId"])}}" class="btn btn-danger">Ver Evento</a>
+    {% endif %}
   </div>
 </div>
 </div>
@@ -67,10 +71,15 @@
         <div class="col-md-12">
 <div class="fondo-panel">
     <p>{{evento["nombre"]}}</p>
-    <p>Visibilidad<span class="oi oi-eye" title "eye"></i></p>
-    <p>Estado<i class="oi oi-check" title="check"></i></p>
+    <p>Visibilidad<span class="oi oi-eye" title "eye"></span></p>
+    {% if evento.aprobado==True %}
+        <p><i class="oi oi-check" title="check"></i>Aprobado</p>
+        {% else %}
+        <p><i class="oi oi-x" title="check"></i>Pendiente</p>
+        {% endif %}
     <a type="button"  class="btn btn-warning" href="{{url_for('actualizar_evento',id=evento["eventoId"])}}">Modificar Evento</a>
     <a type="button" class="btn btn-light" href="{{url_for('eliminar_evento_usuario', id=evento["eventoId"])}}">Eliminar Evento</a>
+    <a  type="button" href="{{url_for('ver_evento',id=evento["eventoId"])}}" class="btn btn-danger">Ver Evento</a>
 </div>
 </div>
 </div>

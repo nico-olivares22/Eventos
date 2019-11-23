@@ -108,3 +108,35 @@
 2019-11-21 23:13:31.342588, Error 500 Problema Interno, Funcion: Unknown
 
 2019-11-21 23:14:09.502177, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-23 16:37:24.277423, (pymysql.err.IntegrityError) (1048, "Column 'nombre' cannot be null"), Funcion: Error en base de datos en crearEvento en funciones.py
+
+2019-11-23 16:41:16.960915, (pymysql.err.IntegrityError) (1048, "Column 'nombre' cannot be null"), Funcion: Error en base de datos en crearEvento en funciones.py
+
+2019-11-23 16:42:33.526782, <bound method SQLAlchemyError._message of IntegrityError('(pymysql.err.IntegrityError) (1048, "Column \'nombre\' cannot be null")',)>, Funcion: error en base de datos 
+
+2019-11-23 16:44:03.347917, (pymysql.err.IntegrityError) (1048, "Column 'nombre' cannot be null"), Funcion: Error en base de datos en crearEvento en funciones.py
+
+2019-11-23 16:44:03.358182, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-23 17:01:00.610643, (pymysql.err.IntegrityError) (1048, "Column 'nombre' cannot be null"), Funcion: Error en base de datos en crearEvento en funciones.py
+
+2019-11-23 17:01:00.614348, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-23 17:04:19.629102, <bound method SQLAlchemyError._message of IntegrityError('(pymysql.err.IntegrityError) (1048, "Column \'nombre\' cannot be null")',)>, Funcion: error en base de datos en crearUsuario en funciones.py
+
+2019-11-23 17:04:19.640592, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-23 18:05:40.112436, (pymysql.err.IntegrityError) (1048, "Column 'nombre' cannot be null"), Funcion: Error en base de datos en crearEvento en funciones.py
+
+2019-11-23 18:07:49.929142, (pymysql.err.IntegrityError) (1048, "Column 'nombre' cannot be null"), Funcion: Error en base de datos en crearEvento en funciones.py
+
+2019-11-23 18:14:28.197187, (pymysql.err.IntegrityError) (1048, "Column 'nombre' cannot be null"), Funcion: Error en base de datos en crearEvento en funciones.py
+
+2019-11-23 18:26:03.663289, (pymysql.err.IntegrityError) (1048, "Column 'nombre' cannot be null"), Funcion: Error en base de datos en crearEvento en funciones.py
+
+2019-11-23 18:26:59.779994, <bound method SQLAlchemyError._message of IntegrityError('(pymysql.err.IntegrityError) (1048, "Column \'contenido\' cannot be null")',)>, Funcion: error en base de datos en crearComentario en funciones.py
+
+2019-11-23 18:28:41.550502, <bound method SQLAlchemyError._message of IntegrityError('(pymysql.err.IntegrityError) (1048, "Column \'nombre\' cannot be null")',)>, Funcion: error en base de datos en crearUsuario en funciones.py
+
+2019-11-23 18:30:41.178000, Error 500 Problema Interno, Funcion: Unknown
