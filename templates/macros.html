@@ -26,8 +26,13 @@
         <div class="col-md-12">
             <div class="fondo-panel">
                 <p>{{evento["nombre"]}}</p>
-                <p>Visibilidad<span class="oi oi-eye" title "eye"></i></p>
+                {% if evento.aprobado==True %}
+                <p>Visibilidad<span class="oi oi-check" title "eye"></span></p>
                 <p>Estado<i class="oi oi-check" title="wrench"></i></p>
+                {% else %}
+                <p>Visibilidad<span class="oi oi-eye" title "eye"></span></p>
+                <p>Pendiete<i class="oi oi-eye" title="wrench"></i></p>
+                {% endif %}
                 <a type="button" class="btn btn-warning" href="{{url_for('eliminar_evento_admin',id=evento["eventoId"])}}">Eliminar Evento </a>
                 <a type="button" class="btn btn-light" href="{{url_for('ver_evento_admin',id=evento["eventoId"])}}">Ver Evento </a>
                 <a type="button" class="btn btn-dark" href="{{url_for('actualizar_evento',id=evento["eventoId"])}}">Editar Evento </a>
@@ -44,7 +49,7 @@
         <div class="col-md-12">
             <div class="fondo-panel">
                 <p>{{evento["nombre"]}}</p>
-                <p>Visibilidad<span class="oi oi-eye" title "eye"></i></p>
+                <p>Visibilidad<span class="oi oi-eye" title "eye"></span></p>
                 <p>Estado<i class="oi oi-wrench" title="wrench"></i></p>
                 <a type="button" class="btn btn-dark" href="{{url_for('aprobar_evento',id=evento["eventoId"])}}">Aprobar Evento </a>
                 <a type="button" class="btn btn-light" href="{{url_for('ver_evento_admin',id=evento["eventoId"])}}">Ver Evento </a>
@@ -71,7 +76,11 @@
         <div class="col-md-12">
 <div class="fondo-panel">
     <p>{{evento["nombre"]}}</p>
-    <p>Visibilidad<span class="oi oi-eye" title "eye"></span></p>
+    {% if evento.aprobado==False %}
+    <p><span class="oi oi-eye" title "eye">Visibilidad</span></p>
+    {% else %}
+    <p><span class="oi oi-check" title "eye">Visibilidad</span></p>
+    {% endif %}
     {% if evento.aprobado==True %}
         <p><i class="oi oi-check" title="check"></i>Aprobado</p>
         {% else %}
@@ -122,8 +131,11 @@
 <div class="media">
   <div class="media-body">
     <h3 class="mt-0 font-weight-bold blue-text oi oi-person">{{comentario.usuario.nombre}}</h3>
+    <h3 class="mt-0 font-weight-bold blue-text">{{comentario["fechahora"]}}</h3>
     <textarea readonly class="form-control">{{comentario["contenido"]}}</textarea>
+    {% if current_user.admin==True %}
     <a type="button" class="btn btn-success boton-comentario" href="{{url_for('eliminar_comentario_admin', id=comentario["comentarioId"])}}"  >Eliminar Comentario </a>
+    {% endif %}
     </div>
 </div>
 {% endmacro %}

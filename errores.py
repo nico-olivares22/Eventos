@@ -2,7 +2,7 @@ from flask import render_template,request, jsonify
 from app import app
 import datetime
 from datetime import date
-from formularios import Inicio
+from formularios import Inicio,Comentarios
 
 #Manejar error de página no encontrada
 @app.errorhandler(404)

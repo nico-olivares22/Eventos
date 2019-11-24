@@ -183,22 +183,28 @@ def ver_evento(id):
     formulario_comentario = Comentarios() #instanciar form comentario
     if formulario_comentario.is_submitted(): #si el form es enviado correctamente
         mostrar_datos_comentario(formulario_comentario) #mostrar datos form
-        comentario=crear_comentario=crearComentario(formulario_comentario.campocomentario.data,id,current_user.usuarioId) #llama a la funcion crear comentario para que el user lo cree
+        comentario=crearComentario(formulario_comentario.campocomentario.data,id,current_user.usuarioId) #llama a la funcion crear comentario para que el user lo cree
         if comentario==False:
             return render_template('500.html')
-        return redirect(url_for('ver_evento', id=id)) #redirecciona a la misma función
+        return redirect(url_for('ver_evento', id=id))#redirecciona a la misma función
     return render_template('evento.html', formulario_comentario=formulario_comentario, id=id, evento=evento,
                             formulario_ingreso=formulario_ingreso, listacomentarios=listacomentarios) #Muestra el template
 
 #Función que le permite ver al admin un evento en particular
 @app.route('/evento-admin/<id>')
+@login_required
 def ver_evento_admin(id):
     if current_user.is_admin()==False:
         return redirect(url_for('pagina'))
     formulario_ingreso=Inicio() #instanciar form inicio
-    evento = db.session.query(Evento).filter(Evento.eventoId == id).one() #trae el evento por id
-    listacomentarios = db.session.query(Comentario).filter(Comentario.eventoId == id).order_by(Comentario.fechahora).all() #trae todos los comentarios del evento por id
-    return render_template('evento_admin.html',formulario_ingreso=formulario_ingreso, id=id,evento=evento,listacomentarios=listacomentarios)
+    if current_user.is_admin():
+        formulario_comentario=Comentarios()
+        evento = db.session.query(Evento).filter(Evento.eventoId == id).one() #trae el evento por id
+        listacomentarios = db.session.query(Comentario).filter(Comentario.eventoId == id).order_by(Comentario.fechahora).all() #trae todos los comentarios del evento por id
+        return render_template('evento_admin.html',formulario_ingreso=formulario_ingreso, id=id,evento=evento,listacomentarios=listacomentarios,formulario_comentario=formulario_comentario)
+    elif not current_user.is_admin():
+        return redirect(url_for('pagina'))
+
 
 #Función que permite al admin tener un panel y saber que eventos estan pendientes de aprobar
 @app.route('/eventos-admin')
@@ -241,10 +247,11 @@ def eliminar_evento_admin(id):
     db.session.delete(evento)
     try:
         db.session.commit()
+        flash('Evento Eliminado por el Admin')
     except SQLAlchemyError as e:
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en eliminar_evento_admin en rutas.py")
-        flash('Evento Eliminado')
+
         return render_template('500.html')
     return redirect(url_for('panel_admin',evento=evento))
 
@@ -258,6 +265,7 @@ def eliminar_evento_usuario(id):
     #Hacer commit de los cambios
     try:
         db.session.commit()
+        flash('Evento Eliminado por el user')
     except SQLAlchemyError as e:
         db.session.rollback()
         escribir_log(str(e._message()), "Error en base de datos en eliminarEvento en rutas.py")

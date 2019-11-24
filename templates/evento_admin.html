@@ -1,4 +1,4 @@
-{% from "macros.html" import evento_comentarioadmin, eventodetallado,evento_comentario %}
+{% from "macros.html" import evento_comentarioadmin, eventodetallado,evento_comentario with context %}
 {% extends "cabecera_footer.html" %}
 {% block estilo %}
 <link rel="stylesheet" href="{{url_for('static',filename='css/estilogeneral.css') }}">
@@ -17,8 +17,8 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <div class="card">
-          <img src="{{url_for('static',filename='imagenes/autodromo.jpg')}}" class="card-img-top imagen-evento" alt="...">
+        <div class="card"  style=" width:1100px; height:auto; overflow: hidden" >
+          <img style="width:1100px; height:500px;" src="{{url_for('static',filename='imagenes/'+evento["imagen"])}}" class="card-img-top imagen-evento" alt="...">
           <div class="card-body">
             <p><span class="oi oi-calendar" title "calendar">{{evento["fecha"]}}</span></p>
             <p><span class="oi oi-clock" title "clock"></span>{{evento["hora"]}}</p>
@@ -29,6 +29,9 @@
             {% endif %}
             {% if evento.aprobado== 1 %}
             <a type="button" class="btn btn-warning" href="{{url_for('eliminar_evento_admin',id=evento["eventoId"])}}">Eliminar Evento </a>
+            {% endif %}
+            {% if current_user.is_authenticated and current_user.admin %}
+            <button type="button" class="btn btn-warning boton-evento" data-toggle="modal" data-target="#modal_comment">Hacer Comentario </button>
             {% endif %}
           </div>
 
@@ -50,5 +53,37 @@
       </div>
     </div>
   </div>
+
+  <!--Modal-->
+  <div class="modal fade" id="modal_comment" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+    <div class="modal-dialog modal-dialog-centered modalcoment1" role="document">
+
+      <form method="POST" action="{{ url_for('ver_evento', id=evento["eventoId"]) }}" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+        <div class="modal-content modalcoment2">
+          <div class="modal-header">
+            <h3 class="modal-title modaltitulo" id="exampleModalCenterTitle" style="text-align: center;">Comentar Evento</h3>
+            <button type="button" class="closebtn" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true" class="ekis">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="comentario">
+              {{ mostrar_campo(formulario_comentario.campocomentario, class='form-control', style="width: 490px; height: 170px" )}}
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger cancelar" data-dismiss="modal">Cancelar</button>
+            {{ mostrar_campo_submit(formulario_comentario.submit , class='btn btn-danger enviar')}}
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
 
 {% endblock %}
