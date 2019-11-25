@@ -17,8 +17,8 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <div class="card"  style=" width:1100px; height:auto; overflow: hidden" >
-          <img style="width:1100px; height:500px;" src="{{url_for('static',filename='imagenes/'+evento["imagen"])}}" class="card-img-top imagen-evento" alt="...">
+        <div class="card"  style=" height:auto; overflow: hidden; width:1100px; " >
+          <img style="weight:300px; height:600px;"src="{{url_for('static',filename='imagenes/'+evento["imagen"])}}" class="card-img-top imagen-evento" alt="...">
           <div class="card-body">
             <p><span class="oi oi-calendar" title "calendar">{{evento["fecha"]}}</span></p>
             <p><span class="oi oi-clock" title "clock"></span>{{evento["hora"]}}</p>

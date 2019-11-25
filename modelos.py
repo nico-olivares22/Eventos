@@ -1,7 +1,7 @@
 from flask import url_for
 from app import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash #Permite generar y verificar pass con hash
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer #Genera los token de confirmación para ccomparar token de logeo
+#from itsdangerous import TimedJSONWebSignatureSerializer as Serializer #Genera los token de confirmación para ccomparar token de logeo
 from flask_login import UserMixin, LoginManager #cuestiones de login en la app
 class Evento(db.Model): #El objeto heredan el modelo para poder trabajar con los tablas
     eventoId = db.Column(db.Integer, primary_key=True) #clave primaria
@@ -75,6 +75,12 @@ class Usuario(UserMixin,db.Model):
         if self.admin==1:
             auxiliar=True
         return auxiliar
+
+    def es_propetario(self, comentario_o_evento):  # Comprueba si el usuario es dueño, se puede usar con eventos o comentarios
+        aux = False
+        if self.usuarioId == comentario_o_evento.usuarioId:
+            aux = True
+        return aux
 
     #función que determina que se mostrará cuando se imprime el objeto
     def __repr__(self):

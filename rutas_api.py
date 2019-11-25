@@ -1,5 +1,5 @@
-from flask import redirect, url_for, request
-from datetime import datetime
+from flask import request#redirect, url_for,
+#from datetime import datetime
 from app import app,db,csrf
 from modelos import *
 from flask import jsonify #se convierten a json
@@ -75,7 +75,7 @@ def apiEliminarEvento(id):
 @app.route('/admin/evento/aprobar/<id>',methods=['POST'])
 @csrf.exempt
 def aprobarEventosApi(id):
-    evento=db.session.query(Evento).get(id)
+    evento=db.session.query(Evento).get_or_404(id)
     evento.aprobado=True
     email=evento.usuario.email
     enviarMail(email, 'Evento Aprobado por el Admin', 'evento_aprobado')
@@ -92,7 +92,7 @@ def aprobarEventosApi(id):
 #curl -i -H "Content-Type:application/json" -H "Accept: application/json" http://localhost:5000/admin/api/comentarios/17
 @app.route('/admin/api/comentarios/<id>', methods=['GET'])
 def apiListarComentarios(id):
-    comentario = db.session.query(Comentario).get(id)
+    comentario = db.session.query(Comentario).get_or_404(id)
     return jsonify(comentario.a_json())
 
 #curl -i -H "Content-Type:application/json" -H "Accept: application/json" http://localhost:5000/api/evento/comentarios/24
@@ -105,7 +105,7 @@ def apiGetComentarioById(id):
 @app.route('/api/deletecomentario/<id>',methods=['DELETE'])
 @csrf.exempt
 def eliminarComentarioApi(id):
-    comentario =db.session.query(Comentario).get(id)
+    comentario =db.session.query(Comentario).get_or_404(id)
     db.session.delete(comentario)
     try:
         db.session.commit()

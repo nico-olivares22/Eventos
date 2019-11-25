@@ -16,7 +16,7 @@ from funciones_mostrar_datos import *
 #Función que sobreescribe el método al intentar ingresar a una ruta no autorizada
 @login_manager.unauthorized_handler
 def unauthorized_callback():
-    flash('Debe iniciar sesión para continuar.','warning')
+    flash('Debe iniciar sesión para continuar.')
     #Redireccionar a la página que contiene el formulario de login
     return redirect(url_for('pagina'))
 
@@ -55,7 +55,7 @@ def registro():
             enviarMail(email, 'Bienvenido a MasterEventos', 'mensaje', formulario=formulario)
             return redirect(url_for('pagina')) #Redirecciona a la función index
         else:
-            flash('Existe una cuenta registrada con el email ingresado', 'danger')
+            flash('Existe una cuenta registrada con el email ingresado')
 
     return render_template('formulario_registrarse.html', formulario_ingreso=formulario_ingreso,formulario = formulario)
 
@@ -140,7 +140,7 @@ def pagina(pag=1, fecha_desde='', fecha_hasta='', opciones=''):
                 return redirect(url_for('pagina')) #redirecciona a la funcion pagina
         else:
             #Mostrar error de autentiación
-            flash('Email o Contraseña incorrectas', 'succes')
+            flash('Email o Contraseña incorrectas')
             return redirect(url_for('pagina'))
     filtro=Filtro() #instanciar form filtro
     pag_tam = 6
@@ -201,8 +201,6 @@ def ver_evento(id):
 @app.route('/evento-admin/<id>')
 @login_required
 def ver_evento_admin(id):
-    if current_user.is_admin()==False:
-        return redirect(url_for('pagina'))
     formulario_ingreso=Inicio() #instanciar form inicio
     if current_user.is_admin():
         formulario_comentario=Comentarios()
@@ -210,6 +208,7 @@ def ver_evento_admin(id):
         listacomentarios = db.session.query(Comentario).filter(Comentario.eventoId == id).order_by(Comentario.fechahora).all() #trae todos los comentarios del evento por id
         return render_template('evento_admin.html',formulario_ingreso=formulario_ingreso, id=id,evento=evento,listacomentarios=listacomentarios,formulario_comentario=formulario_comentario)
     elif not current_user.is_admin():
+        flash('Solo el Admin puede ingresar')
         return redirect(url_for('pagina'))
 
 
@@ -218,6 +217,7 @@ def ver_evento_admin(id):
 @login_required
 def panel_admin():
     if current_user.is_admin()==False:
+        flash('Solo el Admin puede ingresar')
         return redirect(url_for('pagina'))
     formulario_ingreso=Inicio() #Instanciar form inicio
     eventos_aprobados= db.session.query(Evento).filter(Evento.aprobado==True).all() #trae todos los eventos aprobados
@@ -230,6 +230,7 @@ def panel_admin():
 @app.route('/evento-admin/aprobar/<id>')
 def aprobar_evento(id):
     if current_user.is_admin()==False:
+        flash('Solo el Admin puede ingresar')
         return redirect(url_for('pagina'))
     evento=db.session.query(Evento).get(id)
     evento.aprobado=True
@@ -249,6 +250,7 @@ def aprobar_evento(id):
 @app.route('/evento-admin/eliminar/<id>')
 def eliminar_evento_admin(id):
     if current_user.is_admin()==False:
+        flash('Solo el Admin puede ingresar')
         return redirect(url_for('pagina'))
     evento=db.session.query(Evento).get(id) #trae evento por id
     db.session.delete(evento)
@@ -267,22 +269,26 @@ def eliminar_evento_admin(id):
 @login_required
 def eliminar_evento_usuario(id):
     evento= db.session.query(Evento).get(id) #trae evento por id
-    #Eliminar de la db
-    db.session.delete(evento)
-    #Hacer commit de los cambios
-    try:
-        db.session.commit()
-        flash('Evento Eliminado por el user')
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        escribir_log(str(e._message()), "Error en base de datos en eliminarEvento en rutas.py")
-        return render_template('500.html')
+    if current_user.usuarioId == evento.usuarioId:  # Si el usuario tratando de acceder es dueño del evento
+        db.session.delete(evento)#Eliminar de la db
+        #Hacer commit de los cambios
+        try:
+            db.session.commit()
+            flash('Evento Eliminado por el user')
+        except SQLAlchemyError as e:
+            db.session.rollback()
+            escribir_log(str(e._message()), "Error en base de datos en eliminarEvento en rutas.py")
+            return render_template('500.html')
+    else:
+        flash('Usted no es dueño del evento para eliminarlo')
+        return redirect(url_for('pagina'))
     return redirect(url_for('mis_eventos_usuario'))
 
 #Función que permite al admin eliminar comentario
 @app.route('/comentario/eliminar/<id>')
 def eliminar_comentario_admin(id):
     if current_user.is_admin()==False:
+        flash('Solo el Admin pueden ingresar')
         return redirect(url_for('pagina'))
     #Obtener comentario por id
     comentario = db.session.query(Comentario).get(id)
@@ -304,13 +310,17 @@ def eliminar_comentario_admin(id):
 def eliminar_comentario_usuario(id):
     comentario = db.session.query(Comentario).get(id) #trae el comentario por id
     eventoID= comentario.eventoId #obtengo el eventoID
-    db.session.delete(comentario) #Elimino el comentario
-    try:
-        db.session.commit()
-    except SQLAlchemyError as e:
-        #sino queres guardar nada
-        db.session.rollback()
-        escribir_log(str(e._message()), "Error en base de datos en eliminar_comentario_usuario en rutas.py")
-        return render_template('500.html')
-    flash('El comentario ha sido borrado')
+    if current_user.es_propetario(comentario) or current_user.es_propetario(comentario.evento):
+        db.session.delete(comentario) #Elimino el comentario
+        try:
+            db.session.commit()
+            flash('El comentario ha sido borrado')
+        except SQLAlchemyError as e:
+            #sino queres guardar nada
+            db.session.rollback()
+            escribir_log(str(e._message()), "Error en base de datos en eliminar_comentario_usuario en rutas.py")
+            return render_template('500.html')
+    else:
+        flash('Usted no es dueño del comentario que quiere BORRAR')
+        return redirect(url_for('pagina'))
     return redirect(url_for('ver_evento',id=eventoID))
