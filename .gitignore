@@ -7,4 +7,4 @@
 pyvenv.cfg
 .env
 pyvenv.cfg
-.gitignore
+/.idea

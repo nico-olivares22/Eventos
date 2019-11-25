@@ -48,6 +48,7 @@ def registro():
             flash('Cuenta creada correctamente', 'success') #Mostrar mensaje
             mostrar_datos(formulario)  #Imprimir datos por consola
             usuario=crearUsuario(formulario.nombre.data,formulario.apellido.data,formulario.email.data,formulario.password.data) #Llama a la función de la base para cargarla a la misma
+            login_user(usuario, True)
             if usuario==False:
                 return render_template('500.html')
             email=formulario.email.data
@@ -85,36 +86,39 @@ def crear_evento():
 @login_required
 def actualizar_evento(id):
     formulario_ingreso=Inicio() #Instanciar formulario ingreso
-    evento=db.session.query(Evento).get(id) #consulta
-    formulario_crear=CrearEvento(obj=evento) #crear un objeto
-    CrearEvento.opcional(formulario_crear.imagen) #imagen opcional
-    if formulario_crear.validate_on_submit(): #si el form es validado correctamente y ha sido enviado
-        flash('Evento Actualizado Correctamente')
-        evento.nombre=formulario_crear.titulo.data
-        evento.fecha=formulario_crear.fechaEven.data
-        evento.hora=formulario_crear.hora.data
-        evento.tipo=formulario_crear.opciones.data
-        evento.imagen=formulario_crear.imagen.data
-        evento.descripcion=formulario_crear.descripcion.data
-        evento=actualizarEvento(evento)
-        if evento == False:
-            return render_template('500.html')
-        mostrar_datos_crear(formulario_crear)
-        return redirect(url_for('pagina'))
-    else: #sino es validado (cuando el user lo modifica)
+    evento=db.session.query(Evento).filter(Evento.eventoId == id).first_or_404() #consulta
+    if current_user.usuarioId == evento.usuarioId:  # Si el usuario tratando de acceder es dueño del evento
+        formulario_crear=CrearEvento(obj=evento) #crear un objeto
+        CrearEvento.opcional(formulario_crear.imagen) #imagen opcional
+        if formulario_crear.validate_on_submit(): #si el form es validado correctamente y ha sido enviado
+            flash('Evento Actualizado Correctamente')
+            evento.nombre=formulario_crear.titulo.data
+            evento.fecha=formulario_crear.fechaEven.data
+            evento.hora=formulario_crear.hora.data
+            evento.tipo=formulario_crear.opciones.data
+            evento.imagen=formulario_crear.imagen.data
+            evento.descripcion=formulario_crear.descripcion.data
+            evento=actualizarEvento(evento)
+            if evento == False:
+                return render_template('500.html')
+            mostrar_datos_crear(formulario_crear)
+            return redirect(url_for('pagina'))
+        else: #sino es validado (cuando el user lo modifica)
 
-            formulario_crear.titulo.data=evento.nombre
-            formulario_crear.fechaEven.data= evento.fecha
-            formulario_crear.hora.data=evento.hora
-            formulario_crear.opciones.data=evento.tipo
-            formulario_crear.imagen.data=evento.imagen
-            formulario_crear.descripcion.data=evento.descripcion
-            if evento.aprobado==True:#cuando el evento es modificado vuelve a desaprobarse para que el admin lo vuelva a aprobar
-                evento=db.session.query(Evento).get(id)
-                evento.aprobado=False
-                actualizarEvento(evento)
-    return render_template('creacion_evento.html',  formulario_crear=formulario_crear,formulario_ingreso=formulario_ingreso,
-                            destino = "actualizar_evento",evento=evento)
+                formulario_crear.titulo.data=evento.nombre
+                formulario_crear.fechaEven.data= evento.fecha
+                formulario_crear.hora.data=evento.hora
+                formulario_crear.opciones.data=evento.tipo
+                formulario_crear.imagen.data=evento.imagen
+                formulario_crear.descripcion.data=evento.descripcion
+                if evento.aprobado==True: # cuando el evento es modificado vuelve a desaprobarse para que el admin lo vuelva a aprobar
+                    evento=db.session.query(Evento).get(id)
+                    evento.aprobado=False
+                    actualizarEvento(evento)
+        return render_template('creacion_evento.html',  formulario_crear=formulario_crear,formulario_ingreso=formulario_ingreso,
+                                destino = "actualizar_evento",evento=evento)
+    else:
+        return redirect(url_for('pagina'))
 
 
 #Función de Pagina, muestra los eventos traido de la base
@@ -178,17 +182,20 @@ def mis_eventos_usuario():
 
 def ver_evento(id):
     formulario_ingreso = Inicio() #instanciar form inicio
-    evento = db.session.query(Evento).filter(Evento.eventoId == id).one() #consulta
-    listacomentarios = db.session.query(Comentario).filter(Comentario.eventoId == id).order_by(Comentario.fechahora).all() #consulta, trae el evento por id con todos sus comentarios
-    formulario_comentario = Comentarios() #instanciar form comentario
-    if formulario_comentario.is_submitted(): #si el form es enviado correctamente
-        mostrar_datos_comentario(formulario_comentario) #mostrar datos form
-        comentario=crearComentario(formulario_comentario.campocomentario.data,id,current_user.usuarioId) #llama a la funcion crear comentario para que el user lo cree
-        if comentario==False:
-            return render_template('500.html')
-        return redirect(url_for('ver_evento', id=id))#redirecciona a la misma función
-    return render_template('evento.html', formulario_comentario=formulario_comentario, id=id, evento=evento,
-                            formulario_ingreso=formulario_ingreso, listacomentarios=listacomentarios) #Muestra el template
+    evento = db.session.query(Evento).filter(Evento.eventoId == id).first_or_404() #consulta
+    if evento.aprobado is True or (current_user.is_authenticated and current_user.usuarioId == evento.usuarioId): # Si el evento esta aprobado, o quien lo intenta ver es su dueño
+        listacomentarios = db.session.query(Comentario).filter(Comentario.eventoId == id).order_by(Comentario.fechahora).all() #consulta, trae el evento por id con todos sus comentarios
+        formulario_comentario = Comentarios() #instanciar form comentario
+        if formulario_comentario.is_submitted(): #si el form es enviado correctamente
+            mostrar_datos_comentario(formulario_comentario) #mostrar datos form
+            comentario=crearComentario(formulario_comentario.campocomentario.data,id,current_user.usuarioId) #llama a la funcion crear comentario para que el user lo cree
+            if comentario==False:
+                return render_template('500.html')
+            return redirect(url_for('ver_evento', id=id))#redirecciona a la misma función
+        return render_template('evento.html', formulario_comentario=formulario_comentario, id=id, evento=evento,
+                                formulario_ingreso=formulario_ingreso, listacomentarios=listacomentarios) #Muestra el template
+    else:
+        return redirect(url_for('pagina'))
 
 #Función que le permite ver al admin un evento en particular
 @app.route('/evento-admin/<id>')
@@ -199,7 +206,7 @@ def ver_evento_admin(id):
     formulario_ingreso=Inicio() #instanciar form inicio
     if current_user.is_admin():
         formulario_comentario=Comentarios()
-        evento = db.session.query(Evento).filter(Evento.eventoId == id).one() #trae el evento por id
+        evento = db.session.query(Evento).filter(Evento.eventoId == id).first_or_404() #trae el evento por id
         listacomentarios = db.session.query(Comentario).filter(Comentario.eventoId == id).order_by(Comentario.fechahora).all() #trae todos los comentarios del evento por id
         return render_template('evento_admin.html',formulario_ingreso=formulario_ingreso, id=id,evento=evento,listacomentarios=listacomentarios,formulario_comentario=formulario_comentario)
     elif not current_user.is_admin():
