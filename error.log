@@ -142,3 +142,7 @@
 2019-11-23 18:30:41.178000, Error 500 Problema Interno, Funcion: Unknown
 
 2019-11-24 15:05:01.112458, <bound method SQLAlchemyError._message of IntegrityError('(pymysql.err.IntegrityError) (1048, "Column \'contenido\' cannot be null")',)>, Funcion: error en base de datos en crearComentario en funciones.py
+
+2019-11-25 12:29:52.357712, Error 500 Problema Interno, Funcion: Unknown
+
+2019-11-25 12:29:57.551893, Error 500 Problema Interno, Funcion: Unknown
